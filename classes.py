@@ -514,8 +514,12 @@ class MainFunction:
             #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
             #         self.count_consecutive >= 3:
             # if self.alerts_dict['ALERT1'][1] == 'LONG':
-            if Variables.Misc.count_consec_1 >= 4 or \
-                    Variables.Misc.count_consec_2 >= 4:
+            # if Variables.Misc.count_consec_1 >= 4 or \
+            #         Variables.Misc.count_consec_2 >= 4:
+            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') or
+                    (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00')) and \
+                    self.script_timeframe[304][1][0] > 0 and \
+                    self.script_timeframe[306][1][0] > 0:
                 self.v_reason = 'Closed.'
                 self.f_close_position()
                 self.take_profit = 0
@@ -530,8 +534,12 @@ class MainFunction:
             #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
             #         self.count_consecutive <= -3:
             # if self.alerts_dict['ALERT1'][1] == 'SHORT':
-            if Variables.Misc.count_consec_1 <= -4 or \
-                    Variables.Misc.count_consec_2 <= -4:
+            # if Variables.Misc.count_consec_1 <= -4 or \
+            #         Variables.Misc.count_consec_2 <= -4:
+            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '-0.00') or
+                    (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '-0.00')) and \
+                    self.script_timeframe[304][1][0] < 0 and \
+                    self.script_timeframe[306][1][0] < 0:
                 self.v_reason = 'Closed.'
                 self.f_close_position()
                 self.take_profit = 0
@@ -543,6 +551,8 @@ class MainFunction:
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
             condition = (now - self.script_timeframe[key][0]).seconds >= 59 and (now.minute - offset) % int(key/60) == 0
+            if key == 306:
+                condition = condition and now.seconds >= 7
         else:
             condition = (now - self.script_timeframe[key][0]).seconds >= 1 and now.second % key == 0
         if condition:
