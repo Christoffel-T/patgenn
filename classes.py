@@ -8,6 +8,7 @@ import time
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
+import gspread
 
 import pyautogui
 import requests
@@ -18,15 +19,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 
 class Variables:
     class CssSelectors:
+        def __init__(self):
+            pass
+
         evatcoin_leverage = "[id^='el-popover-'] > div.list > div:nth-child(3)"
-        evatcoin_open_confim = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
+        evatcoin_open_confirm = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
         evatcoin_close_long = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(4) > div.px-2.flex-fill.mb-4 > button'
         evatcoin_close_short = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(4) > div:nth-child(2) > button'
         evatcoin_close_confirm = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
@@ -63,6 +67,9 @@ class Variables:
             tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
 
     class Misc:
+        def __init__(self):
+            pass
+
         state_break = False
         screen_width, screen_height = pyautogui.size()
         url_tradingview = r'https://www.tradingview.com/chart'
@@ -150,6 +157,16 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.str_profit_loss = ''
+        self.prices = []
+        self.count_tfsc_long2 = 0
+        self.count_tfsc_short2 = 0
+        self.count_rows_2 = 0
+        self.count_rows_3 = 0
+        self.v_reason_open = ''
+        self.state_logic4 = ''
+        self.state_logic3 = ''
+        self.state_logic2 = ''
         self.v_latest_price_evat = float(0)
         self.take_profit = 0
         self.stop_loss = 0
@@ -182,7 +199,7 @@ class MainFunction:
         self.anchor_price_5_min = float(0)
         self.anchor_price = float(0)
         self.v_previous_price = float(0)
-        self.trigger_open = False
+        self.trigger_open = ''
         self.trigger_close_count = 0
         self.alerts_csv_file = 'alerts.csv'
         self.trigger_open_count_reset = 3
@@ -190,6 +207,7 @@ class MainFunction:
         self.v_yield_temp_str = ''
         self.temp_yields = []
         self.note = ''
+        self.note2 = ''
         self.v_state_yield_temp = False
         self.v_yield_temp = float(0)
         self.v_aop_temp = float(0)
@@ -214,11 +232,11 @@ class MainFunction:
         self.textbox_row3 = 'ROW3'
         self.textbox_row2 = 'ROW2'
         self.textbox_row1 = 'ROW1'
-        self.trigger_close = False
+        self.trigger_close = ''
         self.trigger_open_short = False
         self.trigger_open_long = False
         self.v_tp_sl_str = ''
-        self.v_reason = 'CLOSED'
+        self.v_reason_close = 'C'
         self.percent_stop_loss_reset = float(-2000)
         self.percent_stop_loss = self.percent_stop_loss_reset
         self.percent_take_profit_reset = float(3)
@@ -231,6 +249,7 @@ class MainFunction:
             60: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
             120: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
             180: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
+            240: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
             300: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
             304: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
             306: [datetime.now().replace(second=0, microsecond=0), [float(0), float(0)], '', float(0), float(0), ''],
@@ -338,6 +357,8 @@ class MainFunction:
         self.count_tf_long = 0
         self.count_tfsc_short = 0
         self.count_tfsc_long = 0
+        self.count_tfsc_short2 = 0
+        self.count_tfsc_long2 = 0
         self.trigger_close_short = False
         self.trigger_close_long = False
 
@@ -346,12 +367,18 @@ class MainFunction:
                 self.f_last_reset_time(now, key, offset=-1)
             elif key == 306:
                 self.f_last_reset_time(now, key, offset=1)
-            # else:
-                # self.f_last_reset_time(now, key)
+            else:
+                self.f_last_reset_time(now, key)
             if self.script_timeframe[key][1][0] > 0:
                 self.count_tfsc_long += 1
             elif self.script_timeframe[key][1][0] < 0:
                 self.count_tfsc_short += 1
+
+        for key in [5, 10, 15, 30, 60, 120, 180, 240, 300]:
+            if self.script_timeframe[key][1][0] > 0:
+                self.count_tfsc_long2 += 1
+            elif self.script_timeframe[key][1][0] < 0:
+                self.count_tfsc_short2 += 1
 
         if self.script_timeframe[300][1][0] > self.script_timeframe[300][3]:
             self.count_sc5m_long += 1
@@ -389,7 +416,7 @@ class MainFunction:
             if float(Variables.Misc.tradingview_charts_data2[i][0]) > 0 or Variables.Misc.tradingview_charts_data2[i][0] == '+0.00':
                 self.count_tf_long += 1
                 print(f'POSITIVE {self.count_tf_long}')
-            if float(Variables.Misc.tradingview_charts_data2[i][0]) < 0 or Variables.Misc.tradingview_charts_data2[i][0] == '-0.00':
+            if float(Variables.Misc.tradingview_charts_data2[i][0]) < 0 or Variables.Misc.tradingview_charts_data2[i][0] == '−0.00':
                 self.count_tf_short += 1
                 print(f'NEGATIVE {self.count_tf_short}')
             if i == 7 and self.count_tf_long == 7 and self.script_timeframe[300][1][0] >= 0:
@@ -401,6 +428,31 @@ class MainFunction:
 
         if self.v_previous_price == 0:
             self.v_previous_price = self.v_latest_price
+
+        diff_previous = self.v_latest_price - self.v_previous_price
+
+        if diff_previous >= 50:
+            self.trigger_close = 'SHORT'
+            self.v_reason_close = 'SUDDEN_50'
+            self.f_main3()
+        if diff_previous <= -50:
+            self.trigger_close = 'LONG'
+            self.v_reason_close = 'SUDDEN_50'
+            self.f_main3()
+
+        if self.count_consecutive >= 5 and self.v_latest_price < self.v_previous_price:
+            self.trigger_close = 'LONGWAIT'
+        elif self.count_consecutive <= -5 and self.v_latest_price > self.v_previous_price:
+            self.trigger_close = 'SHORTWAIT'
+
+        if self.trigger_close == 'LONGWAIT' and diff_previous < -0.1:
+            self.v_reason_close = 'TAKE_PROFIT'
+            self.trigger_close = 'LONG'
+            self.f_main3()
+        elif self.trigger_close == 'SHORTWAIT' and diff_previous > 0.1:
+            self.v_reason_close = 'TAKE_PROFIT'
+            self.trigger_close = 'SHORT'
+            self.f_main3()
 
         if self.v_latest_price > self.v_previous_price:
             if self.count_consecutive < 0:
@@ -416,8 +468,8 @@ class MainFunction:
             self.count_consecutive -= 1
 
         self.subtext1 = ''
-        percent_diff = 0
         diff = self.v_latest_price - self.anchor_price
+        percent_diff = 0
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
         percent_diff_str = f"{'{:.4f}'.format(percent_diff)}%"
@@ -436,8 +488,8 @@ class MainFunction:
                 Variables.Misc.count_consec_1 = 0
             elif Variables.Misc.tradingview_charts_data2[8][0] > Variables.Misc.tradingview_charts_data2[8][1]:
                 Variables.Misc.count_consec_1 += 1
-            Variables.Misc.tradingview_charts_data2[8][1] = Variables.Misc.tradingview_charts_data2[8][0] 
-        if float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '-0.00':
+            Variables.Misc.tradingview_charts_data2[8][1] = Variables.Misc.tradingview_charts_data2[8][0]
+        if float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00':
             if Variables.Misc.count_consec_1 > 0:
                 Variables.Misc.count_consec_1 = 0
                 Variables.Misc.count_consec_1 = 0
@@ -448,79 +500,156 @@ class MainFunction:
         if self.script_timeframe[304][1][0] > 0:
             if Variables.Misc.count_consec_2 < 0:
                 Variables.Misc.count_consec_2 = 0
+                self.count_rows_2 = 0
             elif self.script_timeframe[304][1][0] > self.script_timeframe[304][1][1]:
-                if self.script_timeframe[304][1][0] - self.script_timeframe[304][1][1] >= 5:
-                    Variables.Misc.count_consec_2 += 1
                 Variables.Misc.count_consec_2 += 1
+            elif self.script_timeframe[304][1][0] < self.script_timeframe[304][1][1]:
+                Variables.Misc.count_consec_2 = 0
+            self.count_rows_2 += 1
             self.script_timeframe[304][1][1] = self.script_timeframe[304][1][0]
         if self.script_timeframe[304][1][0] < 0:
             if Variables.Misc.count_consec_2 > 0:
                 Variables.Misc.count_consec_2 = 0
-                Variables.Misc.count_consec_2 = 0
+                self.count_rows_2 = 0
             elif self.script_timeframe[304][1][0] < self.script_timeframe[304][1][1]:
-                if self.script_timeframe[304][1][0] - self.script_timeframe[304][1][1] <= -5:
-                    Variables.Misc.count_consec_2 -= 1
                 Variables.Misc.count_consec_2 -= 1
+            elif self.script_timeframe[304][1][0] > self.script_timeframe[304][1][1]:
+                Variables.Misc.count_consec_2 = 0
+            self.count_rows_2 -= 1
             self.script_timeframe[304][1][1] = self.script_timeframe[304][1][0]
 
         if self.script_timeframe[306][1][0] > 0:
             if Variables.Misc.count_consec_3 < 0:
                 Variables.Misc.count_consec_3 = 0
+                self.count_rows_3 = 0
             elif self.script_timeframe[306][1][0] > self.script_timeframe[306][1][1]:
-                if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] >= 5:
-                    Variables.Misc.count_consec_3 += 1
+                # if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] >= 5:
+                #     Variables.Misc.count_consec_3 += 1
                 Variables.Misc.count_consec_3 += 1
+            elif self.script_timeframe[306][1][0] < self.script_timeframe[306][1][1]:
+                Variables.Misc.count_consec_3 = 0
+            self.count_rows_3 += 1
             self.script_timeframe[306][1][1] = self.script_timeframe[306][1][0]
         if self.script_timeframe[306][1][0] < 0:
             if Variables.Misc.count_consec_3 > 0:
                 Variables.Misc.count_consec_3 = 0
-                Variables.Misc.count_consec_3 = 0
+                self.count_rows_3 = 0
             elif self.script_timeframe[306][1][0] < self.script_timeframe[306][1][1]:
-                if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] <= -5:
-                    Variables.Misc.count_consec_3 -= 1
+                # if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] <= -5:
+                #     Variables.Misc.count_consec_3 -= 1
                 Variables.Misc.count_consec_3 -= 1
+            elif self.script_timeframe[306][1][0] > self.script_timeframe[306][1][1]:
+                Variables.Misc.count_consec_3 = 0
+            self.count_rows_3 -= 1
             self.script_timeframe[306][1][1] = self.script_timeframe[306][1][0]
+        consec1 = 3
+        consec2 = 3
+        consec3 = 5
+
+        self.str_profit_loss = "{:.2f}".format(self.v_bal - self.v_bal_open - self.v_bal * 0.005 - self.v_bal_open * 0.005)
+
+        if (float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') and \
+                (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00') and \
+                self.script_timeframe[304][1][0] > 0 and \
+                self.script_timeframe[306][1][0] > 0:
+            self.v_reason_open = '4 GR'
+            self.v_reason_close = self.v_reason_open
+            self.trigger_open = 'LONG'
+            self.trigger_close = 'SHORT'
+        elif (float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '−0.00') and \
+                (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00') and \
+                self.script_timeframe[304][1][0] < 0 and \
+                self.script_timeframe[306][1][0] < 0:
+            self.v_reason_open = '4 RE'
+            self.v_reason_close = self.v_reason_open
+            self.trigger_open = 'SHORT'
+            self.trigger_close = 'LONG'
+        elif Variables.Misc.count_consec_2 >= consec1 and \
+                Variables.Misc.count_consec_3 >= consec2 and \
+                self.count_tfsc_long2 >= 8:
+            self.v_reason_open = f'sc4 sc6 inc={consec1} {consec2}'
+            self.v_reason_close = self.v_reason_open
+            self.trigger_open = 'LONG'
+            self.trigger_close = 'SHORT'
+        elif Variables.Misc.count_consec_2 <= -consec1 and \
+                Variables.Misc.count_consec_3 <= -consec2 and \
+                self.count_tfsc_short2 >= 8:
+            self.v_reason_open = self.v_reason_close = f'sc4 sc6 dec={consec1} {consec2}'
+            self.v_reason_close = self.v_reason_open
+            self.trigger_open = 'SHORT'
+            self.trigger_close = 'LONG'
+
+        # if self.v_unrealized > 2.5:
+        #     if self.count_consecutive >= consec3:
+        #         self.v_reason_close = f'con inc={consec3}'
+        #         self.trigger_close = 'SHORT'
+        #     if self.count_consecutive <= -consec3:
+        #         self.v_reason_close = f'con dec={consec3}'
+        #         self.trigger_close = 'LONG'
+
+        diff_trigger = 50
+        try:
+            diff3 = self.prices[-3] - self.prices[-1]
+        except Exception as e:
+            diff3 = 0
+
+
+        if diff_previous >= diff_trigger or diff3 >= diff_trigger:
+            self.v_reason_close = f'pr inc={"{:.2f}".format(diff_previous)}'
+            self.trigger_close = 'SHORT'
+        if diff_previous <= -diff_trigger or diff3 <= -diff_trigger:
+            self.v_reason_close = f'pr dec={"{:.2f}".format(diff_previous)}'
+            self.trigger_close = 'SHORT'
+
+        if Variables.Misc.tv_vol >= 10:
+            diff_trigger2 = 7.5
+        else:
+            diff_trigger2 = 5.5
+        try:
+            diff2 = self.prices[-1] - self.prices[-5]
+        except Exception as e:
+            diff2 = 0
+
+        if not self.v_direction == 'NO_POS':
+            if self.script_timeframe[304][1][0] > 0 and Variables.Misc.count_consec_2 >= 3:
+                Variables.Misc.count_consec_2 = 0
+                self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
+                self.v_reason_close = self.v_reason_open
+                self.trigger_close = 'SHORT'
+                self.f_main3()
+                self.trigger_open = 'LONG'
+            if self.script_timeframe[304][1][0] < 0 and Variables.Misc.count_consec_2 <= -3:
+                Variables.Misc.count_consec_2 = 0
+                self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
+                self.v_reason_close = self.v_reason_open
+                self.trigger_close = 'LONG'
+                self.f_main3()
+                self.trigger_open = 'SHORT'
+
+
+
+        # if diff2 >= diff_trigger2 and self.count_consecutive >= 5:
+        #     self.v_reason_close = f'cm inc={"{:.2f}".format(diff2)}'
+        #     self.trigger_close = 'SHORT'
+        # if diff2 <= -diff_trigger2 and self.count_consecutive <= -5:
+        #     self.v_reason_close = f'cm dec={"{:.2f}".format(diff2)}'
+        #     self.trigger_close = 'LONG'
 
         self.f_main3()
 
     def f_main3(self):
+        self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
+        self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
         if self.v_direction == 'NO_POS':
-            # if self.trigger_close_short and self.script_timeframe[300][1][0] > 0 and \
-            #         (self.count_sc5m_long >= 3 or self.count_sc5m_long2 >= 3) and \
-            #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
-            #         self.count_consecutive >= 3:
-            # if self.alerts_dict['ALERT1'][1] == 'LONG':
-            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') or
-                    (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00')) and \
-                    self.script_timeframe[304][1][0] > 0 and \
-                    self.script_timeframe[306][1][0] > 0:
-                self.f_open_position('LONG')
-                self.script_timeframe[300][1][0] = 0
-            # if self.trigger_close_long and \
-            #         self.script_timeframe[300][1][0] < 0 and \
-            #         (self.count_sc5m_short >= 3 or self.count_sc5m_short2 >= 3) and \
-            #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
-            #         self.count_consecutive <= -3:
-            # if self.alerts_dict['ALERT1'][1] == 'SHORT':
-            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '-0.00') or
-                    (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '-0.00')) and \
-                    self.script_timeframe[304][1][0] < 0 and \
-                    self.script_timeframe[306][1][0] < 0:
-                self.f_open_position('SHORT')
+            if not self.trigger_open == '':
+                self.f_open_position(self.trigger_open)
+                self.trigger_open = ''
+                self.count_consecutive = 0
                 self.script_timeframe[300][1][0] = 0
         elif self.v_direction == 'Empty':
-            # if self.trigger_close_short and self.script_timeframe[300][1][0] > 0 and \
-            #         (self.count_sc5m_long >= 3 or self.count_sc5m_long2 >= 3) and \
-            #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
-            #         self.count_consecutive >= 3:
-            # if self.alerts_dict['ALERT1'][1] == 'LONG':
-            # if Variables.Misc.count_consec_1 >= 4 or \
-            #         Variables.Misc.count_consec_2 >= 4:
-            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') or
-                    (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00')) and \
-                    self.script_timeframe[304][1][0] > 0 and \
-                    self.script_timeframe[306][1][0] > 0:
-                self.v_reason = 'Closed.'
+            if self.trigger_close == 'SHORT':
+                self.trigger_close = ''
+                self.count_consecutive = 0
                 self.f_close_position()
                 self.take_profit = 0
                 self.stop_loss = 0
@@ -528,41 +657,31 @@ class MainFunction:
                 Variables.Misc.count_consec_2 = 0
                 Variables.Misc.count_consec_3 = 0
         elif self.v_direction == 'Multi':
-            # if self.trigger_close_long and \
-            #         self.script_timeframe[300][1][0] < 0 and \
-            #         (self.count_sc5m_short >= 3 or self.count_sc5m_short2 >= 3) and \
-            #         (abs(self.script_timeframe[300][1][0] - self.script_timeframe[300][3]) >= 5) and \
-            #         self.count_consecutive <= -3:
-            # if self.alerts_dict['ALERT1'][1] == 'SHORT':
-            # if Variables.Misc.count_consec_1 <= -4 or \
-            #         Variables.Misc.count_consec_2 <= -4:
-            if ((float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '-0.00') or
-                    (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '-0.00')) and \
-                    self.script_timeframe[304][1][0] < 0 and \
-                    self.script_timeframe[306][1][0] < 0:
-                self.v_reason = 'Closed.'
+            if self.trigger_close == 'LONG':
+                self.trigger_close = ''
+                self.count_consecutive = 0
                 self.f_close_position()
                 self.take_profit = 0
                 self.stop_loss = 0
                 Variables.Misc.count_consec_1 = 0
                 Variables.Misc.count_consec_2 = 0
                 Variables.Misc.count_consec_3 = 0
+        self.v_reason_close = ''
+        self.trigger_close = ''
+        self.trigger_open = ''
+        self.v_reason_open = ''
 
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
-            condition = (now - self.script_timeframe[key][0]).seconds >= 59 and (now.minute - offset) % int(key/60) == 0
+            condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset) % int(key/60) == 0
             if key == 306:
-                condition = condition and now.seconds >= 7
+                condition = condition and now.second >= 7
         else:
             condition = (now - self.script_timeframe[key][0]).seconds >= 1 and now.second % key == 0
         if condition:
             self.script_timeframe[key][0] = now.replace(second=0, microsecond=0)
             self.script_timeframe[key][1][0] = float(0)
             self.script_timeframe[key][2] = f"{'{:.2f}'.format(self.cumulative_value)}"
-            if key == 300:
-                self.f_update_textbox(f'{int(key/60)}_MIN', True, True)
-            else:
-                self.f_update_textbox(f'{key}_SEC' if key < 60 else f'{int(key/60)}_MIN')
             return True
         else:
             if self.v_previous_price != float(0):
@@ -573,49 +692,52 @@ class MainFunction:
                     self.script_timeframe[key][2] = f"{'{:.2f}'.format(self.script_timeframe[key][1][0])}"
             return False
 
-    def f_update_textbox(self, note='', blank_before=False, blank_after=False, header_only=False):
+    def f_update_textbox(self, note='', blank_before=False, blank_after=False, header_only=False, note2=False):
         list_output = [
-            # ['date', self.f_current_time(out='date')],
-            ['time', self.f_current_time(out='time')],
-            ['direction', self.v_direction],
-            ['tv_price', '{:.2f}'.format(self.v_latest_price)],
-            # ['evat_price', '{:.2f}'.format(self.v_latest_price_evat)],
-            ['vol', '{:.2f}'.format(Variables.Misc.tv_vol)],
-            ['balance', '{:.2f}'.format(self.v_bal)],
-            # ['tv_5s', f'\'{Variables.Misc.tradingview_charts_data[1]}'],
-            # ['tv_10s', f'\'{Variables.Misc.tradingview_charts_data[2]}'],
-            # ['tv_15s', f'\'{Variables.Misc.tradingview_charts_data[3]}'],
-            # ['tv_30s', f'\'{Variables.Misc.tradingview_charts_data[4]}'],
-            # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}'],
-            ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}'],
-            # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}'],
-            ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}'],
-            # ['sc_5s', f'\'{self.script_timeframe[5][2]}'],
-            # ['sc_10s', f'\'{self.script_timeframe[10][2]}'],
-            # ['sc_15s', f'\'{self.script_timeframe[15][2]}'],
-            # ['sc_30s', f'\'{self.script_timeframe[30][2]}'],
-            # ['sc_1m', f'\'{self.script_timeframe[60][2]}'],
-            ['sc_2m', f'\'{self.script_timeframe[120][2]}'],
-            # ['sc_3m', f'\'{self.script_timeframe[180][2]}'],
-            ['sc_5m_4', f'\'{self.script_timeframe[304][2]}'],
-            ['sc_5m_6', f'\'{self.script_timeframe[306][2]}'],
-            ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}'],
-            ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}'],
-            ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}'],
-            ['HA4', f'\'{Variables.Misc.tv_HA[4][1]}'],
-            ['HA5', f'\'{Variables.Misc.tv_HA[5][1]}'],
-            # ['sc_5m_2', f'\'{self.script_timeframe[300][5]}'],
-            # ['last_rev', self.cumulative_value_str2],
-            # ['to_SL/to_TP', self.v_tp_sl_str],
-            # ['aop', '{:.2f}'.format(self.v_aop)],
-            # ['esp', '{:.2f}'.format(self.v_esp)],
-            # ['aop-esp', '{:.2f}'.format(self.v_diff)],
-            # ['alert1', f"{self.alerts_dict['ALERT1'][0]}"],
-            # ['recent', f"{self.alerts_dict['ALERT1'][1]}"],
-            # ['previous', f"{self.alerts_dict['ALERT1'][2]}"],
-            ['note', note],
-            ['unr_p/l', '{:.2f}'.format(self.v_unrealized)],
-            ['yield', '{:.2f}'.format(self.v_yield)],
+            ['unr_p/l', '{:.2f}'.format(self.v_unrealized) if not note2 else ''],
+            ['yld', '{:.2f}'.format(self.v_yield) if not note2 else ''],
+            # ['date', self.f_current_time(out='date') if not note2 else ''],
+            ['note2', self.note2],
+            ['time', self.f_current_time(out='time') if not note2 else ''],
+            ['direction', self.v_direction if not note2 else ''],
+            ['tv_price', '{:.2f}'.format(self.v_latest_price) if not note2 else ''],
+            # ['evat_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
+            ['vol', '{:.2f}'.format(Variables.Misc.tv_vol) if not note2 else ''],
+            ['balance', '{:.2f}'.format(self.v_bal) if not note2 else ''],
+            # ['tv_5s', f'\'{Variables.Misc.tradingview_charts_data[1]}' if not note2 else ''],
+            # ['tv_10s', f'\'{Variables.Misc.tradingview_charts_data[2]}' if not note2 else ''],
+            # ['tv_15s', f'\'{Variables.Misc.tradingview_charts_data[3]}' if not note2 else ''],
+            # ['tv_30s', f'\'{Variables.Misc.tradingview_charts_data[4]}' if not note2 else ''],
+            # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}' if not note2 else ''],
+            ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}' if not note2 else ''],
+            # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}' if not note2 else ''],
+            ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
+            ['sc_5m_4', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
+            ['sc_5m_6', f'\'{self.script_timeframe[306][2]}' if not note2 else ''],
+            ['note', note if not note2 else ''],
+            ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
+            ['sc_10s', f'\'{self.script_timeframe[10][2]}' if not note2 else ''],
+            ['sc_15s', f'\'{self.script_timeframe[15][2]}' if not note2 else ''],
+            ['sc_30s', f'\'{self.script_timeframe[30][2]}' if not note2 else ''],
+            ['sc_1m', f'\'{self.script_timeframe[60][2]}' if not note2 else ''],
+            ['sc_2m', f'\'{self.script_timeframe[120][2]}' if not note2 else ''],
+            ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
+            ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
+            ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
+            # ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}' if not note2 else ''],
+            # ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}' if not note2 else ''],
+            # ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}' if not note2 else ''],
+            # ['HA4', f'\'{Variables.Misc.tv_HA[4][1]}' if not note2 else ''],
+            # ['HA5', f'\'{Variables.Misc.tv_HA[5][1]}' if not note2 else ''],
+            # ['sc_5m_2', f'\'{self.script_timeframe[300][5]}' if not note2 else ''],
+            # ['last_rev', self.cumulative_value_str2 if not note2 else ''],
+            # ['to_SL/to_TP', self.v_tp_sl_str if not note2 else ''],
+            # ['aop', '{:.2f}'.format(self.v_aop) if not note2 else ''],
+            # ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
+            # ['aop-esp', '{:.2f}'.format(self.v_diff) if not note2 else ''],
+            # ['alert1', f"{self.alerts_dict['ALERT1'][0]}" if not note2 else ''],
+            # ['recent', f"{self.alerts_dict['ALERT1'][1]}" if not note2 else ''],
+            # ['previous', f"{self.alerts_dict['ALERT1'][2]}" if not note2 else ''],
         ]
         if header_only:
             return [[f"{','.join([sublist[0] for sublist in list_output])}"]]
@@ -627,7 +749,7 @@ class MainFunction:
         if blank_before:
             csv_string = [[]] + csv_string
         if blank_after:
-            csv_string = csv_string
+            csv_string = csv_string + [[]]
         self.output = csv_string + self.output
         for key, value in self.alerts_dict.items():
             value[2] = value[1]
@@ -726,7 +848,7 @@ class MainFunction:
             time.sleep(2)
 
         try:
-            self.v_latest_price_evat = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_current_price))).text
+            self.v_latest_price_evat = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_current_price))).text
             self.v_latest_price_evat = float(self.v_latest_price_evat[:-1])
         except:
             self.v_latest_price_evat = float(0)
@@ -781,8 +903,12 @@ class MainFunction:
                 except:
                     self.v_latest_price = float(0)
 
+                self.prices.append(self.v_latest_price)
+                if len(self.prices) > 5:
+                    self.prices.pop()
+
                 try:
-                    raw_data = self.wait.until(EC.presence_of_element_located((By.XPATH, Variables.XPaths.tradingview_logs[1]))).text
+                    raw_data = self.wait.until(ec.presence_of_element_located((By.XPATH, Variables.XPaths.tradingview_logs[1]))).text
                     self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_charts[1]).click()
                     raw_data = raw_data.split('\n')
                 except:
@@ -902,22 +1028,28 @@ class MainFunction:
 
     def f_open_position(self, direction):
         self.v_aop = float(self.v_latest_price)
-        self.v_bal = self.v_bal - 0.2 - 0.02 * self.v_bal_leaf
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
         self.v_bal_open = self.v_bal
         if direction.upper() == 'LONG':
             self.v_direction = 'Multi'
         else:
             self.v_direction = 'Empty'
         print(f'{self.v_bal} - {direction}')
-        self.f_update_textbox(f"POSITION_OPENED:{direction.upper()}", True, True)
+        # self.f_update_textbox(f"{direction.upper()} opened: {self.v_reason_open}", True, True)
+        self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
         return
 
     def f_close_position(self):
         self.v_aop = 0
-        self.v_bal = self.v_bal - 0.2 - 0.02 * self.v_bal_leaf
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
         self.v_bal_open = self.v_bal
         self.v_direction = 'NO_POS'
-        self.f_update_textbox(f"{self.v_reason}", True, True)
+        # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
+        self.note2 = f"C: {self.v_reason_close}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
         return
 
 class LocalSheets:
@@ -945,6 +1077,7 @@ class LocalSheets:
 
 class GoogleSheets:
     def __init__(self):
+        self.count1 = 0
         self.SERVICE_ACCOUNT_FILE = 'keys.json'
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
         self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE, scopes=self.SCOPES)
@@ -954,6 +1087,7 @@ class GoogleSheets:
 
     def append(self, data):
         print('UPDATING TO GOOGLE SHEETS')
+        self.backup()
         instance1 = MainFunction('', '')
         body = {
             'requests': [
@@ -990,5 +1124,33 @@ class GoogleSheets:
         except:
             return False
 
-    def backup(self):
+    def backup(self, row_limit=5000, clear=False):
+        # Authenticate with Google Sheets API
+        credentials = self.creds
+        client = gspread.authorize(credentials)
+
+        # Open the spreadsheet
+        spreadsheet_id = self.SPREADSHEET_ID
+        sheet_name = 'Sheet1'
+        spreadsheet = client.open_by_key(spreadsheet_id)
+        worksheet = spreadsheet.worksheet(sheet_name)
+        if clear:
+            worksheet.clear()
+        # Get the row count
+        row_count = worksheet.row_count
+
+        # Check if row count exceeds 5000
+        if row_count > row_limit:
+            # Duplicate the sheet
+            # self.count1 += 1
+            # duplicated_sheet = spreadsheet.duplicate_sheet(worksheet.id, new_sheet_name=f'BU{i}')
+
+            # Clear rows 5 to the end of the sheet
+            # duplicated_worksheet = spreadsheet.worksheet(duplicated_sheet['properties']['title'])
+            worksheet.delete_rows(row_limit, row_count - 1)  # Assuming headers are in row 1
+
+            print("rows deleted successfully!")
+        else:
+            print("No need")
+
         return

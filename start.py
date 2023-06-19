@@ -3,6 +3,8 @@ import threading
 import psutil
 import subprocess
 
+subprocess.Popen(['start', 'cmd', '/c', 'python', 'delete_rows.py'], shell=True)
+
 def on_closing():
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         Variables.Misc.state_break = True
