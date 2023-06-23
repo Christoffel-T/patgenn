@@ -65,6 +65,12 @@ class Variables:
         tradingview_charts = {}
         for i in range(1, 9):
             tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
+        tradingview_ohlc = {
+            'O': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
+            'H': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
+            'L': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
+            'C': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
+        }
 
     class Misc:
         def __init__(self):
@@ -157,6 +163,10 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.price_close = 0
+        self.price_low = 0
+        self.price_high = 0
+        self.price_open = 0
         self.str_profit_loss = ''
         self.prices = []
         self.count_tfsc_long2 = 0
@@ -330,7 +340,7 @@ class MainFunction:
                     self.cumulative_value_str2 = f"+{'{:.2f}'.format(self.cumulative_value2)}"
                 else:
                     self.cumulative_value_str2 = f"{'{:.2f}'.format(self.cumulative_value2)}"
-
+                # ?
                 if self.cumulative_percent2 > 0:
                     self.cumulative_percent_str2 = f"+{'{:.2f}'.format(self.cumulative_percent2)}"
                 else:
@@ -708,7 +718,7 @@ class MainFunction:
             # ['tv_10s', f'\'{Variables.Misc.tradingview_charts_data[2]}' if not note2 else ''],
             # ['tv_15s', f'\'{Variables.Misc.tradingview_charts_data[3]}' if not note2 else ''],
             # ['tv_30s', f'\'{Variables.Misc.tradingview_charts_data[4]}' if not note2 else ''],
-            # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}' if not note2 else ''],
+            # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}' if not note2 else ''[],
             ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}' if not note2 else ''],
             # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}' if not note2 else ''],
             ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
@@ -724,6 +734,10 @@ class MainFunction:
             ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
             ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
             ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
+            ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
+            ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
+            ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
+            ['C', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['C'][1])}" if not note2 else ''],
             # ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}' if not note2 else ''],
             # ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}' if not note2 else ''],
             # ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}' if not note2 else ''],
@@ -919,6 +933,11 @@ class MainFunction:
                 Variables.Misc.tv_vol = float(Variables.Misc.tv_vol)
                 for key in Variables.Misc.tv_HA:
                     Variables.Misc.tv_HA[key][1] = self.driver.find_element(By.XPATH, Variables.Misc.tv_HA[key][0]).text
+
+                Variables.XPaths.tradingview_ohlc['O'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['O'][0]).text)
+                Variables.XPaths.tradingview_ohlc['H'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['H'][0]).text)
+                Variables.XPaths.tradingview_ohlc['L'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['L'][0]).text)
+                Variables.XPaths.tradingview_ohlc['C'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
 
                 for i in range(1, 9):
                     Variables.Misc.tradingview_charts_data[i] = self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_charts[i]).text
