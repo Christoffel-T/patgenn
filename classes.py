@@ -57,7 +57,7 @@ class Variables:
         evatcoin_close_position = '/html/body/div[1]/main/div/div[1]/div[3]/div[1]/div[2]/a'
         evatcoin_close_quantity = '/html/body/div/main/div/div[1]/div[3]/div[2]/div[2]/input'
         evatcoin_leaf_bought = '/html/body/div[1]/main/div/div[2]/div[1]/div[2]/div/table/tbody/tr/td[5]'
-        tradingview_close_price = '/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]'
+        tradingview_close_price = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]'
         tradingview_volume = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[9]/div[2]'
         tradingview_logs = {}
         for i in range(1, 10):
@@ -66,10 +66,10 @@ class Variables:
         for i in range(1, 9):
             tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
         tradingview_ohlc = {
-            'O': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
-            'H': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
-            'L': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
-            'C': ['/html/body/div[2]/div[5]/div[3]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
+            'O': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
+            'H': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
+            'L': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
+            'C': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
         }
 
     class Misc:
@@ -455,14 +455,14 @@ class MainFunction:
         elif self.count_consecutive <= -5 and self.v_latest_price > self.v_previous_price:
             self.trigger_close = 'SHORTWAIT'
 
-        if self.trigger_close == 'LONGWAIT' and diff_previous < -0.1:
-            self.v_reason_close = 'TAKE_PROFIT'
-            self.trigger_close = 'LONG'
-            self.f_main3()
-        elif self.trigger_close == 'SHORTWAIT' and diff_previous > 0.1:
-            self.v_reason_close = 'TAKE_PROFIT'
-            self.trigger_close = 'SHORT'
-            self.f_main3()
+        # if self.trigger_close == 'LONGWAIT' and diff_previous < -0.1:
+        #     self.v_reason_close = 'TAKE_PROFIT'
+        #     self.trigger_close = 'LONG'
+        #     self.f_main3()
+        # elif self.trigger_close == 'SHORTWAIT' and diff_previous > 0.1:
+        #     self.v_reason_close = 'TAKE_PROFIT'
+        #     self.trigger_close = 'SHORT'
+        #     self.f_main3()
 
         if self.v_latest_price > self.v_previous_price:
             if self.count_consecutive < 0:
