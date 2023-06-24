@@ -63,6 +63,7 @@ class Variables:
         for i in range(1, 10):
             tradingview_logs[i] = f'/html/body/div[2]/div[6]/div/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div[{i+1}]'
         tradingview_charts = {}
+        # d
         for i in range(1, 9):
             tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
         tradingview_ohlc = {
