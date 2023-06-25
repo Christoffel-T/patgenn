@@ -60,7 +60,6 @@ class Variables:
         evatcoin_close_position = '/html/body/div[1]/main/div/div[1]/div[3]/div[1]/div[2]/a'
         evatcoin_close_quantity = '/html/body/div/main/div/div[1]/div[3]/div[2]/div[2]/input'
         evatcoin_leaf_bought = '/html/body/div[1]/main/div/div[2]/div[1]/div[2]/div/table/tbody/tr/td[5]'
-        tradingview_close_price = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]'
         tradingview_volume = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[9]/div[2]'
         tradingview_logs = {}
         for i in range(1, 10):
@@ -74,6 +73,8 @@ class Variables:
             'L': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
             'C': ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
         }
+        tradingview_close_price = tradingview_ohlc['C'][0]
+
 
     class Misc:
         def __init__(self):
@@ -166,7 +167,6 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
-        self.qualifier_0015 = ''
         self.price_close = 0
         self.price_low = 0
         self.price_high = 0
@@ -378,7 +378,7 @@ class MainFunction:
 
         for key in self.script_timeframe:
             if key == 304:
-                self.f_last_reset_time(now, key, offset=-1)
+                self.f_last_reset_time(now, key, offset=-2)
             elif key == 306:
                 self.f_last_reset_time(now, key, offset=1)
             else:
@@ -487,14 +487,6 @@ class MainFunction:
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
         percent_diff_str = f"{'{:.4f}'.format(percent_diff)}%"
-        if self.v_latest_price > 0 > self.v_previous_price or \
-                self.v_latest_price < 0 < self.v_previous_price:
-            if self.trigger_close == '' and self.trigger_open == '':
-                self.qualifier_0015 = ''
-        if percent_diff >= 0.015:
-            self.qualifier_0015 = 'LONG'
-        elif percent_diff <= -0.015:
-            self.qualifier_0015 = 'SHORT'
 
         if self.count_consecutive > 0:
             self.subtext1 = f"inc={abs(self.count_consecutive)} - by: {'{:.2f}'.format(diff)} ({percent_diff_str})"
@@ -734,7 +726,7 @@ class MainFunction:
             ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}' if not note2 else ''],
             # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}' if not note2 else ''],
             ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
-            ['sc_5m_4', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
+            ['sc_5m_3', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
             ['sc_5m_6', f'\'{self.script_timeframe[306][2]}' if not note2 else ''],
             ['note', note if not note2 else ''],
             ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
@@ -951,7 +943,7 @@ class MainFunction:
                 Variables.XPaths.tradingview_ohlc['H'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['H'][0]).text)
                 Variables.XPaths.tradingview_ohlc['L'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['L'][0]).text)
                 prev_close = Variables.XPaths.tradingview_ohlc['C'][1]
-                Variables.XPaths.tradingview_ohlc['C'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
+                Variables.XPaths.tradingview_ohlc['C'][1] = self.v_latest_price
                 if prev_close != Variables.XPaths.tradingview_ohlc['C'][1]:
                     Variables.XPaths.tradingview_ohlc_prev['C'][1] = prev_close
 
@@ -1062,43 +1054,29 @@ class MainFunction:
         return ','.join(items)
 
     def f_open_position(self, direction):
-        if self.qualifier_0015 == 'LONG' and direction.upper() == 'LONG' or \
-                self.qualifier_0015 == 'SHORT' and direction.upper() == 'SHORT':
-            self.qualifier_0015 = ''
-            self.v_aop = float(self.v_latest_price)
-            self.v_bal = self.v_bal - 0.005 * self.v_bal
-            self.v_bal_open = self.v_bal
-            if direction.upper() == 'LONG':
-                self.v_direction = 'Multi'
-            else:
-                self.v_direction = 'Empty'
-            print(f'{self.v_bal} - {direction}')
-            # self.f_update_textbox(f"{direction.upper()} opened: {self.v_reason_open}", True, True)
-            self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
-            self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
-            self.note2 = ''
+        self.v_aop = float(self.v_latest_price)
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
+        self.v_bal_open = self.v_bal
+        if direction.upper() == 'LONG':
+            self.v_direction = 'Multi'
         else:
-            self.note2 = f"Qualifier for 0.015 not met yet."
-            # self.f_update_textbox(note2=True)
-            self.note2 = ''
+            self.v_direction = 'Empty'
+        print(f'{self.v_bal} - {direction}')
+        # self.f_update_textbox(f"{direction.upper()} opened: {self.v_reason_open}", True, True)
+        self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
         return
 
     def f_close_position(self):
-        if self.qualifier_0015 == 'LONG' and self.v_direction == 'Empty' or \
-                self.qualifier_0015 == 'SHORT' and self.v_direction == 'Multi':
-            self.qualifier_0015 = False
-            self.v_aop = 0
-            self.v_bal = self.v_bal - 0.005 * self.v_bal
-            self.v_bal_open = self.v_bal
-            self.v_direction = 'NO_POS'
-            # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
-            self.note2 = f"C: {self.v_reason_close}"
-            self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
-            self.note2 = ''
-        else:
-            self.note2 = f"qualifier for 0.015 not met yet."
-            # self.f_update_textbox(note2=True)
-            self.note2 = ''
+        self.v_aop = 0
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
+        self.v_bal_open = self.v_bal
+        self.v_direction = 'NO_POS'
+        # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
+        self.note2 = f"C: {self.v_reason_close}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
         return
 
 class LocalSheets:
