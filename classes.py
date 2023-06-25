@@ -37,6 +37,9 @@ class Variables:
         evatcoin_current_price = 'body > div > main > div > div.page-top.d-flex.pt-2 > div.kline-box.flex-fill.mr-2 > div.coin-change.d-flex.align-items-center.py-2.pl-4.heading.justify-content-between > div.d-flex.align-items-center > div.price.px-3.border-right > span.current'
 
     class XPaths:
+        tradingview_ohlc_prev = {
+            'C': ['', float(0)]
+        }
         evatcoin_perpetual = '/html/body/div[1]/header/nav/div/ul[1]/li[4]/a'
         evatcoin_leverage = '/html/body/div[1]/main/div/div[1]/div[3]/div[1]/div[3]/span/span/div'
         evatcoin_leverage_selector = '/html/body/div[2]/div[1]'
@@ -163,6 +166,7 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.qualifier_0015 = False
         self.price_close = 0
         self.price_low = 0
         self.price_high = 0
@@ -483,6 +487,8 @@ class MainFunction:
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
         percent_diff_str = f"{'{:.4f}'.format(percent_diff)}%"
+        if abs(percent_diff) >= 0.015:
+            self.qualifier_0015 = True
 
         if self.count_consecutive > 0:
             self.subtext1 = f"inc={abs(self.count_consecutive)} - by: {'{:.2f}'.format(diff)} ({percent_diff_str})"
@@ -648,38 +654,42 @@ class MainFunction:
         self.f_main3()
 
     def f_main3(self):
-        self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
-        self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
-        if self.v_direction == 'NO_POS':
-            if not self.trigger_open == '':
-                self.f_open_position(self.trigger_open)
-                self.trigger_open = ''
-                self.count_consecutive = 0
-                self.script_timeframe[300][1][0] = 0
-        elif self.v_direction == 'Empty':
-            if self.trigger_close == 'SHORT':
-                self.trigger_close = ''
-                self.count_consecutive = 0
-                self.f_close_position()
-                self.take_profit = 0
-                self.stop_loss = 0
-                Variables.Misc.count_consec_1 = 0
-                Variables.Misc.count_consec_2 = 0
-                Variables.Misc.count_consec_3 = 0
-        elif self.v_direction == 'Multi':
-            if self.trigger_close == 'LONG':
-                self.trigger_close = ''
-                self.count_consecutive = 0
-                self.f_close_position()
-                self.take_profit = 0
-                self.stop_loss = 0
-                Variables.Misc.count_consec_1 = 0
-                Variables.Misc.count_consec_2 = 0
-                Variables.Misc.count_consec_3 = 0
-        self.v_reason_close = ''
-        self.trigger_close = ''
-        self.trigger_open = ''
-        self.v_reason_open = ''
+        if self.qualifier_0015:
+            self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
+            self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
+            if self.v_direction == 'NO_POS':
+                if not self.trigger_open == '':
+                    self.f_open_position(self.trigger_open)
+                    self.trigger_open = ''
+                    self.count_consecutive = 0
+                    self.script_timeframe[300][1][0] = 0
+            elif self.v_direction == 'Empty':
+                if self.trigger_close == 'SHORT':
+                    self.trigger_close = ''
+                    self.count_consecutive = 0
+                    self.f_close_position()
+                    self.take_profit = 0
+                    self.stop_loss = 0
+                    Variables.Misc.count_consec_1 = 0
+                    Variables.Misc.count_consec_2 = 0
+                    Variables.Misc.count_consec_3 = 0
+            elif self.v_direction == 'Multi':
+                if self.trigger_close == 'LONG':
+                    self.trigger_close = ''
+                    self.count_consecutive = 0
+                    self.f_close_position()
+                    self.take_profit = 0
+                    self.stop_loss = 0
+                    Variables.Misc.count_consec_1 = 0
+                    Variables.Misc.count_consec_2 = 0
+                    Variables.Misc.count_consec_3 = 0
+            self.v_reason_close = ''
+            self.trigger_close = ''
+            self.trigger_open = ''
+            self.v_reason_open = ''
+        else:
+            self.note2 = f"qualifier for 0.015 not met yet."
+            self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
 
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
@@ -734,6 +744,7 @@ class MainFunction:
             ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
             ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
             ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
+            ['PRCLPR', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc_prev['C'][1])}" if not note2 else ''],
             ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
             ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
             ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
@@ -915,7 +926,7 @@ class MainFunction:
                 try:
                     self.v_latest_price = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_close_price).text)
                 except:
-                    self.v_latest_price = float(0)
+                    self.v_latest_price = self.v_latest_price
 
                 self.prices.append(self.v_latest_price)
                 if len(self.prices) > 5:
@@ -937,7 +948,10 @@ class MainFunction:
                 Variables.XPaths.tradingview_ohlc['O'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['O'][0]).text)
                 Variables.XPaths.tradingview_ohlc['H'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['H'][0]).text)
                 Variables.XPaths.tradingview_ohlc['L'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['L'][0]).text)
+                prev_close = Variables.XPaths.tradingview_ohlc['C'][1]
                 Variables.XPaths.tradingview_ohlc['C'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
+                if prev_close != Variables.XPaths.tradingview_ohlc['C'][1]:
+                    Variables.XPaths.tradingview_ohlc_prev['C'][1] = prev_close
 
                 for i in range(1, 9):
                     Variables.Misc.tradingview_charts_data[i] = self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_charts[i]).text
