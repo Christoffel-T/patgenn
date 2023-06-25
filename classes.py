@@ -166,7 +166,6 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
-        self.qualifier_0015 = False
         self.price_close = 0
         self.price_low = 0
         self.price_high = 0
@@ -487,8 +486,6 @@ class MainFunction:
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
         percent_diff_str = f"{'{:.4f}'.format(percent_diff)}%"
-        if abs(percent_diff) >= 0.015:
-            self.qualifier_0015 = True
 
         if self.count_consecutive > 0:
             self.subtext1 = f"inc={abs(self.count_consecutive)} - by: {'{:.2f}'.format(diff)} ({percent_diff_str})"
@@ -654,42 +651,38 @@ class MainFunction:
         self.f_main3()
 
     def f_main3(self):
-        if self.qualifier_0015:
-            self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
-            self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
-            if self.v_direction == 'NO_POS':
-                if not self.trigger_open == '':
-                    self.f_open_position(self.trigger_open)
-                    self.trigger_open = ''
-                    self.count_consecutive = 0
-                    self.script_timeframe[300][1][0] = 0
-            elif self.v_direction == 'Empty':
-                if self.trigger_close == 'SHORT':
-                    self.trigger_close = ''
-                    self.count_consecutive = 0
-                    self.f_close_position()
-                    self.take_profit = 0
-                    self.stop_loss = 0
-                    Variables.Misc.count_consec_1 = 0
-                    Variables.Misc.count_consec_2 = 0
-                    Variables.Misc.count_consec_3 = 0
-            elif self.v_direction == 'Multi':
-                if self.trigger_close == 'LONG':
-                    self.trigger_close = ''
-                    self.count_consecutive = 0
-                    self.f_close_position()
-                    self.take_profit = 0
-                    self.stop_loss = 0
-                    Variables.Misc.count_consec_1 = 0
-                    Variables.Misc.count_consec_2 = 0
-                    Variables.Misc.count_consec_3 = 0
-            self.v_reason_close = ''
-            self.trigger_close = ''
-            self.trigger_open = ''
-            self.v_reason_open = ''
-        else:
-            self.note2 = f"qualifier for 0.015 not met yet."
-            self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
+        self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
+        if self.v_direction == 'NO_POS':
+            if not self.trigger_open == '':
+                self.f_open_position(self.trigger_open)
+                self.trigger_open = ''
+                self.count_consecutive = 0
+                self.script_timeframe[300][1][0] = 0
+        elif self.v_direction == 'Empty':
+            if self.trigger_close == 'SHORT':
+                self.trigger_close = ''
+                self.count_consecutive = 0
+                self.f_close_position()
+                self.take_profit = 0
+                self.stop_loss = 0
+                Variables.Misc.count_consec_1 = 0
+                Variables.Misc.count_consec_2 = 0
+                Variables.Misc.count_consec_3 = 0
+        elif self.v_direction == 'Multi':
+            if self.trigger_close == 'LONG':
+                self.trigger_close = ''
+                self.count_consecutive = 0
+                self.f_close_position()
+                self.take_profit = 0
+                self.stop_loss = 0
+                Variables.Misc.count_consec_1 = 0
+                Variables.Misc.count_consec_2 = 0
+                Variables.Misc.count_consec_3 = 0
+        self.v_reason_close = ''
+        self.trigger_close = ''
+        self.trigger_open = ''
+        self.v_reason_open = ''
 
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
