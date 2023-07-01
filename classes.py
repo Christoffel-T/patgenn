@@ -167,6 +167,9 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.note3 = ''
+        self.diff_5min = float(0)
+        self.resetted = True
         self.price_close = 0
         self.price_low = 0
         self.price_high = 0
@@ -210,7 +213,7 @@ class MainFunction:
         self.cumulative_percent = float(0)
         self.cumulative_value = float(0)
         self.count_consecutive = 0
-        self.anchor_price_5_min = float(0)
+        self.anchor_price_2 = float(0)
         self.anchor_price = float(0)
         self.v_previous_price = float(0)
         self.trigger_open = ''
@@ -309,6 +312,8 @@ class MainFunction:
                 break
 
     def f_main2(self):
+
+        # region GET-DATA: Misc
         ctypes.windll.kernel32.SetThreadExecutionState(0x80000002)
         ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)
         print(f'\n=== Loop at: {self.f_current_time()}')
@@ -378,7 +383,7 @@ class MainFunction:
 
         for key in self.script_timeframe:
             if key == 304:
-                self.f_last_reset_time(now, key, offset=-2)
+                self.f_last_reset_time(now, key, offset=-1)
             elif key == 306:
                 self.f_last_reset_time(now, key, offset=1)
             else:
@@ -442,32 +447,19 @@ class MainFunction:
 
         if self.v_previous_price == 0:
             self.v_previous_price = self.v_latest_price
+        # endregion1
 
         diff_previous = self.v_latest_price - self.v_previous_price
+        consec1 = 3
+        consec2 = 3
 
-        if diff_previous >= 50:
-            self.trigger_close = 'SHORT'
-            self.v_reason_close = 'SUDDEN_50'
-            self.f_main3()
-        if diff_previous <= -50:
-            self.trigger_close = 'LONG'
-            self.v_reason_close = 'SUDDEN_50'
-            self.f_main3()
+        open1 = Variables.XPaths.tradingview_ohlc['O'][1]
+        low1 = Variables.XPaths.tradingview_ohlc['L'][1] - 5
+        low2 = Variables.XPaths.tradingview_ohlc['L'][1]
+        high1 = Variables.XPaths.tradingview_ohlc['H'][1]
+        high2 = Variables.XPaths.tradingview_ohlc['H'][1] + 5
 
-        if self.count_consecutive >= 5 and self.v_latest_price < self.v_previous_price:
-            self.trigger_close = 'LONGWAIT'
-        elif self.count_consecutive <= -5 and self.v_latest_price > self.v_previous_price:
-            self.trigger_close = 'SHORTWAIT'
-
-        # if self.trigger_close == 'LONGWAIT' and diff_previous < -0.1:
-        #     self.v_reason_close = 'TAKE_PROFIT'
-        #     self.trigger_close = 'LONG'
-        #     self.f_main3()
-        # elif self.trigger_close == 'SHORTWAIT' and diff_previous > 0.1:
-        #     self.v_reason_close = 'TAKE_PROFIT'
-        #     self.trigger_close = 'SHORT'
-        #     self.f_main3()
-
+        # region GET-DATA: Misc
         if self.v_latest_price > self.v_previous_price:
             if self.count_consecutive < 0:
                 self.count_consecutive = 0
@@ -483,6 +475,7 @@ class MainFunction:
 
         self.subtext1 = ''
         diff = self.v_latest_price - self.anchor_price
+        self.diff_5min = self.v_latest_price - self.anchor_price_2
         percent_diff = 0
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
@@ -556,98 +549,113 @@ class MainFunction:
                 Variables.Misc.count_consec_3 = 0
             self.count_rows_3 -= 1
             self.script_timeframe[306][1][1] = self.script_timeframe[306][1][0]
-        consec1 = 3
-        consec2 = 3
-        consec3 = 5
+        # endregion2
 
-        self.str_profit_loss = "{:.2f}".format(self.v_bal - self.v_bal_open - self.v_bal * 0.005 - self.v_bal_open * 0.005)
+        # region LOGIC: O=L O=H
 
-        if (float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') and \
-                (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00') and \
-                self.script_timeframe[304][1][0] > 0 and \
-                self.script_timeframe[306][1][0] > 0:
-            self.v_reason_open = '4 GR'
-            self.v_reason_close = self.v_reason_open
-            self.trigger_open = 'LONG'
-            self.trigger_close = 'SHORT'
-        elif (float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '−0.00') and \
-                (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00') and \
-                self.script_timeframe[304][1][0] < 0 and \
-                self.script_timeframe[306][1][0] < 0:
-            self.v_reason_open = '4 RE'
-            self.v_reason_close = self.v_reason_open
-            self.trigger_open = 'SHORT'
-            self.trigger_close = 'LONG'
-        elif Variables.Misc.count_consec_2 >= consec1 and \
-                Variables.Misc.count_consec_3 >= consec2 and \
-                self.count_tfsc_long2 >= 8:
-            self.v_reason_open = f'sc4 sc6 inc={consec1} {consec2}'
-            self.v_reason_close = self.v_reason_open
-            self.trigger_open = 'LONG'
-            self.trigger_close = 'SHORT'
-        elif Variables.Misc.count_consec_2 <= -consec1 and \
-                Variables.Misc.count_consec_3 <= -consec2 and \
-                self.count_tfsc_short2 >= 8:
-            self.v_reason_open = self.v_reason_close = f'sc4 sc6 dec={consec1} {consec2}'
-            self.v_reason_close = self.v_reason_open
-            self.trigger_open = 'SHORT'
-            self.trigger_close = 'LONG'
-
-        # if self.v_unrealized > 2.5:
-        #     if self.count_consecutive >= consec3:
-        #         self.v_reason_close = f'con inc={consec3}'
-        #         self.trigger_close = 'SHORT'
-        #     if self.count_consecutive <= -consec3:
-        #         self.v_reason_close = f'con dec={consec3}'
-        #         self.trigger_close = 'LONG'
-
-        diff_trigger = 50
-        try:
-            diff3 = self.prices[-3] - self.prices[-1]
-        except Exception as e:
-            diff3 = 0
-
-
-        if diff_previous >= diff_trigger or diff3 >= diff_trigger:
-            self.v_reason_close = f'pr inc={"{:.2f}".format(diff_previous)}'
-            self.trigger_close = 'SHORT'
-        if diff_previous <= -diff_trigger or diff3 <= -diff_trigger:
-            self.v_reason_close = f'pr dec={"{:.2f}".format(diff_previous)}'
-            self.trigger_close = 'SHORT'
-
-        if Variables.Misc.tv_vol >= 10:
-            diff_trigger2 = 7.5
-        else:
-            diff_trigger2 = 5.5
-        try:
-            diff2 = self.prices[-1] - self.prices[-5]
-        except Exception as e:
-            diff2 = 0
-
-        if not self.v_direction == 'NO_POS':
-            if self.script_timeframe[304][1][0] > 0 and Variables.Misc.count_consec_2 >= 3:
-                Variables.Misc.count_consec_2 = 0
-                self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
-                self.v_reason_close = self.v_reason_open
+        if low1 <= open1 <= low2:
+            script2 = True
+            if self.resetted and self.v_direction != 'Multi':
+                self.resetted = False
+                self.v_reason_close = self.v_reason_open = 'O = L'
                 self.trigger_close = 'SHORT'
                 self.f_main3()
                 self.trigger_open = 'LONG'
-            if self.script_timeframe[304][1][0] < 0 and Variables.Misc.count_consec_2 <= -3:
-                Variables.Misc.count_consec_2 = 0
-                self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
-                self.v_reason_close = self.v_reason_open
+                self.f_main3()
+        elif high1 <= open1 <= high2:
+            script2 = True
+            if self.resetted and self.v_direction != 'Empty':
+                self.resetted = False
+                self.v_reason_close = self.v_reason_open = 'O = H'
                 self.trigger_close = 'LONG'
                 self.f_main3()
                 self.trigger_open = 'SHORT'
+                self.f_main3()
+        else:
+            script2 = False
+        # endregion
 
+        if script2:
+            self.note3 = 'SCR#2'
+        # region script1
+        if not script2:
+            self.note3 = 'SCR#1'
+            # region LOGIC: Sudden 50
+            if diff_previous >= 50 and self.v_direction == 'Empty':
+                self.trigger_close = 'SHORT'
+                self.v_reason_close = 'SUDDEN_50'
+                self.f_main3()
+            if diff_previous <= -50 and self.v_direction == 'Multi':
+                self.trigger_close = 'LONG'
+                self.v_reason_close = 'SUDDEN_50'
+                self.f_main3()
+            # endregion
 
+            # region LOGIC: 4GR 4RE sc4 sc6
+            self.str_profit_loss = "{:.2f}".format(self.v_bal - self.v_bal_open - self.v_bal * 0.005 - self.v_bal_open * 0.005)
 
-        # if diff2 >= diff_trigger2 and self.count_consecutive >= 5:
-        #     self.v_reason_close = f'cm inc={"{:.2f}".format(diff2)}'
-        #     self.trigger_close = 'SHORT'
-        # if diff2 <= -diff_trigger2 and self.count_consecutive <= -5:
-        #     self.v_reason_close = f'cm dec={"{:.2f}".format(diff2)}'
-        #     self.trigger_close = 'LONG'
+            if (float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') and \
+                    (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00') and \
+                    self.script_timeframe[304][1][0] > 0 and \
+                    self.script_timeframe[306][1][0] > 0:
+                self.anchor_price_2 = self.v_latest_price
+                self.v_reason_open = '4 GR'
+                self.v_reason_close = self.v_reason_open
+                if self.diff_5min >= 5:
+                    self.trigger_open = 'LONG'
+                    self.trigger_close = 'SHORT'
+            elif (float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '−0.00') and \
+                    (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00') and \
+                    self.script_timeframe[304][1][0] < 0 and \
+                    self.script_timeframe[306][1][0] < 0:
+                self.anchor_price_2 = self.v_latest_price
+                self.v_reason_open = '4 RE'
+                self.v_reason_close = self.v_reason_open
+                if self.diff_5min <= -5:
+                    self.trigger_open = 'SHORT'
+                    self.trigger_close = 'LONG'
+            elif Variables.Misc.count_consec_2 >= consec1 and \
+                    Variables.Misc.count_consec_3 >= consec2 and \
+                    self.count_tfsc_long2 >= 8:
+                self.anchor_price_2 = self.v_latest_price
+                self.v_reason_open = f'sc4 sc6 inc={consec1} {consec2}'
+                self.v_reason_close = self.v_reason_open
+                if self.diff_5min >= 5:
+                    self.trigger_open = 'LONG'
+                    self.trigger_close = 'SHORT'
+            elif Variables.Misc.count_consec_2 <= -consec1 and \
+                    Variables.Misc.count_consec_3 <= -consec2 and \
+                    self.count_tfsc_short2 >= 8:
+                self.anchor_price_2 = self.v_latest_price
+                self.v_reason_open = self.v_reason_close = f'sc4 sc6 dec={consec1} {consec2}'
+                self.v_reason_close = self.v_reason_open
+                if self.diff_5min <= -5:
+                    self.trigger_open = 'SHORT'
+                    self.trigger_close = 'LONG'
+            # endregion
+
+            # region LOGIC: col K opposite
+            if not self.v_direction == 'NO_POS':
+                if self.script_timeframe[304][1][0] > 0 and Variables.Misc.count_consec_2 >= 3:
+                    self.anchor_price_2 = self.v_latest_price
+                    Variables.Misc.count_consec_2 = 0
+                    self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
+                    self.v_reason_close = self.v_reason_open
+                    if self.diff_5min >= 5:
+                        self.trigger_open = 'LONG'
+                        self.trigger_close = 'SHORT'
+                        self.f_main3()
+                if self.script_timeframe[304][1][0] < 0 and Variables.Misc.count_consec_2 <= -3:
+                    self.anchor_price_2 = self.v_latest_price
+                    Variables.Misc.count_consec_2 = 0
+                    self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
+                    self.v_reason_close = self.v_reason_open
+                    if self.diff_5min <= -5:
+                        self.trigger_open = 'SHORT'
+                        self.trigger_close = 'LONG'
+                        self.f_main3()
+            # endregion
+        # endregion
 
         self.f_main3()
 
@@ -688,11 +696,16 @@ class MainFunction:
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
             condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset) % int(key/60) == 0
+            if key == 304 and not condition:
+                offset2 = -3
+                condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset2) % int(key / 60) == 0
             if key == 306:
                 condition = condition and now.second >= 7
         else:
             condition = (now - self.script_timeframe[key][0]).seconds >= 1 and now.second % key == 0
         if condition:
+            if key == 300:
+                self.resetted = True
             self.script_timeframe[key][0] = now.replace(second=0, microsecond=0)
             self.script_timeframe[key][1][0] = float(0)
             self.script_timeframe[key][2] = f"{'{:.2f}'.format(self.cumulative_value)}"
@@ -728,6 +741,8 @@ class MainFunction:
             ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
             ['sc_5m_3', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
             ['sc_5m_6', f'\'{self.script_timeframe[306][2]}' if not note2 else ''],
+            ['script', f"\'{self.note3}" if not note2 else ''],
+            ['sum_net', f"\'{'{:.2f}'.format(self.diff_5min)}" if not note2 else ''],
             ['note', note if not note2 else ''],
             ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
             ['sc_10s', f'\'{self.script_timeframe[10][2]}' if not note2 else ''],
@@ -922,6 +937,9 @@ class MainFunction:
                 except:
                     self.v_latest_price = self.v_latest_price
 
+                if self.anchor_price_2 == 0:
+                    self.anchor_price_2 = self.v_latest_price
+
                 self.prices.append(self.v_latest_price)
                 if len(self.prices) > 5:
                     self.prices.pop()
@@ -1074,6 +1092,29 @@ class MainFunction:
         self.v_bal_open = self.v_bal
         self.v_direction = 'NO_POS'
         # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
+        self.note2 = f"C: {self.v_reason_close}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
+        return
+
+    def f_open_position_real(self, direction):
+        self.v_aop = float(self.v_latest_price)
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
+        self.v_bal_open = self.v_bal
+        if direction.upper() == 'LONG':
+            self.v_direction = 'Multi'
+        else:
+            self.v_direction = 'Empty'
+        self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
+        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+        self.note2 = ''
+        return
+
+    def f_close_position_real(self):
+        self.v_aop = 0
+        self.v_bal = self.v_bal - 0.005 * self.v_bal
+        self.v_bal_open = self.v_bal
+        self.v_direction = 'NO_POS'
         self.note2 = f"C: {self.v_reason_close}"
         self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
         self.note2 = ''
