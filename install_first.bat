@@ -9,6 +9,7 @@ pip install google-auth google-auth-oauthlib google-auth-httplib2
 pip install selenium
 pip install webdriver_manager
 pip install google-api-python-client
+pip install psutil
 
 
 REM Pause to view the output
