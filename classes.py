@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import math
 import re
 import base64
 import ctypes
@@ -30,14 +31,30 @@ class Variables:
         def __init__(self):
             pass
 
-        evatcoin_leverage = "[id^='el-popover-'] > div.list > div:nth-child(3)"
+        evatcoin_leverage = ["body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.nav.nav-pills > div.flex-fill.px-3.justify-content-end.d-flex.align-items-center > span > span > div",
+                             "[id^='el-popover-'] > div.list > div:nth-child(1)",
+                             "[id^='el-popover-'] > div.list > div:nth-child(2)",
+                             "[id^='el-popover-'] > div.list > div:nth-child(3)",
+                             "[id^='el-popover-'] > div.list > div:nth-child(4)",]
+        evatcoin_open_long = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(5) > div.px-2.flex-fill.mb-4 > button'
+        evatcoin_open_short = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(5) > div:nth-child(2) > button'
         evatcoin_open_confirm = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
         evatcoin_close_long = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(4) > div.px-2.flex-fill.mb-4 > button'
         evatcoin_close_short = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(4) > div:nth-child(2) > button'
-        evatcoin_close_confirm = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
-        evatcoin_current_price = 'body > div > main > div > div.page-top.d-flex.pt-2 > div.kline-box.flex-fill.mr-2 > div.coin-change.d-flex.align-items-center.py-2.pl-4.heading.justify-content-between > div.d-flex.align-items-center > div.price.px-3.border-right > span.current'
+        evatcoin_close_confirm = '#exampleModal > div > div > div.modal-footer > button.btn.btn-primary'
+        evatcoin_current_price = 'body > div > main > div > div.page-top.d-flex.pt-2 > div.kline-box.flex-fill.mr-2 > div.coin-change.d-flex.align-items-center.py-2.pl-4.heading.justify-content-between > div.d-flex.align-items-center > div.price.px-3.border-right.increace > span.current'
+        evatcoin_25 = "body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div.px-2 > div > div > div:nth-child(3)"
+        evatcoin_50 = "body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div.px-2 > div > div > div:nth-child(4)"
+        evatcoin_hirakura = "body > div:nth-child(1) > main > div > div.d-flex.pb-2.mt-2 > div.markets-pair-list.page-bottom.bg-plain.flex-fill > div.body > div > table > tbody > tr > td:nth-child(14) > button.btn.btn-sm.btn-danger.mb-1"
+        evatcoin_marketprice = "#exampleModal > div > div > div.modal-body > form > div:nth-child(1) > div > div > button"
+        evatcoin_qty = "#message-text"
+        evatcoin_buy_qty = "body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div.input-group.mb-4.input-group-sm > input"
+        evatcoin_direction = "body > div:nth-child(1) > main > div > div.d-flex.pb-2.mt-2 > div.markets-pair-list.page-bottom.bg-plain.flex-fill > div.body > div > table > tbody > tr > td:nth-child(4)"
+        evatcoin_balance = "body > div > main > div > div.d-flex.pb-2.mt-2 > div.ml-2 > div > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2)"
+        evatcoin_esp = "body > div:nth-child(1) > main > div > div.d-flex.pb-2.mt-2 > div.markets-pair-list.page-bottom.bg-plain.flex-fill > div.body > div > table > tbody > tr > td:nth-child(10)"
 
     class XPaths:
+        evatcoin_current_price = "/html/body/div[1]/main/div/div[1]/div[1]/div[1]/div[1]/div[2]/span[1]"
         tradingview_ohlc_prev = {
             'C': ['', float(0)]
         }
@@ -168,6 +185,7 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.v_direction_evat = ''
         self.v_bal_elw = float(0)
         self.override = False
         self.note3 = ''
@@ -232,8 +250,11 @@ class MainFunction:
         self.v_yield_temp = float(0)
         self.v_aop_temp = float(0)
         self.v_aop = float(0)
-        self.v_bal = float(260)
-        self.v_bal_leaf = float(80)
+        self.v_bal = float(39)
+        self.v_percentage = 1
+        self.leaf_size = 10
+        self.v_buy_qty = math.ceil((self.v_bal*self.v_percentage)/self.leaf_size)
+        self.v_bal_leaf = self.v_buy_qty*self.leaf_size
         self.v_diff = float(0)
         self.v_latest_price = float(0)
         self.v_esp = float(0)
@@ -302,6 +323,54 @@ class MainFunction:
         self.alerts_dict = {
             'ALERT1': ['Heiken Ashi', '-', '-'],
         }
+
+    def f_close_evat(self):
+        try:
+            self.driver.switch_to.window(self.driver.window_handles[0])
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_hirakura).click()
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_marketprice).click()
+            time.sleep(1)
+            input_elem = self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_qty)
+            input_elem.clear()
+            input_elem.send_keys("999")
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_close_confirm).click()
+
+        except:
+            self.f_update_textbox('evat_close_error', True, True)
+            print('evat_close_error')
+            raise ValueError
+
+    def f_open_evat(self):
+        try:
+            self.driver.switch_to.window(self.driver.window_handles[0])
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_leverage[0]).click()
+            time.sleep(0.7)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_leverage[3]).click()
+            time.sleep(1)
+            input_elem = self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_buy_qty)
+            input_elem.clear()
+            input_elem.send_keys(self.v_buy_qty)
+            time.sleep(1)
+            if self.v_direction == 'Multi':
+                self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_open_long).click()
+                print('opened long')
+            elif self.v_direction == 'Empty':
+                self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_open_short).click()
+                print('opened short')
+            else:
+                print('nodirection')
+            time.sleep(1)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_open_confirm).click()
+            time.sleep(1)
+
+        except:
+            self.f_update_textbox('evat_open_error', True, True)
+            print('evat_open_error')
+            raise ValueError
 
     def f_main1(self):
         self.f_open_chrome()
@@ -558,7 +627,7 @@ class MainFunction:
 
         # region LOGIC sc3/6 to sell
         if self.count_consecutive >= 3 and \
-                self.script_timeframe[304][1][0] >= 7 and \
+                self.script_timeframe[304][1][0] >= 9 and \
                 self.v_direction != 'Multi':
             resetted = f'sc_5m_3 inc'
             self.anchor_price_2 = self.v_latest_price
@@ -570,7 +639,7 @@ class MainFunction:
             self.override = True
             # self.count_consecutive = 0
         elif self.count_consecutive <= -3 and \
-                self.script_timeframe[304][1][0] <= -7 and \
+                self.script_timeframe[304][1][0] <= -9 and \
                 self.v_direction != 'Empty':
             resetted = f'sc_5m_3 dec'
             self.anchor_price_2 = self.v_latest_price
@@ -619,48 +688,63 @@ class MainFunction:
             script2 = True
         # endregion
 
-        # region LOGIC: O>L+3 O<H-3
-        # if self.v_direction == 'Multi' and (open1 > (low1 + 3)) and not self.override:
-        #     resetted = 'O>(L+3)'
+        # region LOGIC: (O-L)>=5 (H-O)>=5
+        if self.v_direction == 'Multi' and (open1 >= (low1 + 5)) and not self.override:
+            resetted = '(O-L)>=5'
+            # if self.resetted != resetted:
+            #     self.resetted = resetted
+                # self.count_consecutive = 0
+            # if self.count_consecutive <= -3:
+            self.trigger_close = 'LONG'
+            self.v_reason_close = resetted
+            self.script_timeframe[304][1][0] = 0
+            self.diff_5min = 0
+            self.f_main3()
+        elif self.v_direction == 'Empty' and (open1 <= (high1 - 5)) and not self.override:
+            resetted = '(H-O)>=5'
+            # if self.resetted != resetted:
+            #     self.resetted = resetted
+                # self.count_consecutive = 0
+            # if self.count_consecutive >= 3:
+            self.trigger_close = 'SHORT'
+            self.v_reason_close = resetted
+            self.script_timeframe[304][1][0] = 0
+            self.diff_5min = 0
+            self.f_main3()
+        # endregion
+
+        # region LOGIC: SUDDEN50
+        if diff_previous >= 50 and self.v_direction == 'Empty':
+            self.trigger_close = 'SHORT'
+            self.v_reason_close = 'SUDDEN_50'
+            self.f_main3()
+        if diff_previous <= -50 and self.v_direction == 'Multi':
+            self.trigger_close = 'LONG'
+            self.v_reason_close = 'SUDDEN_50'
+            self.f_main3()
+        # endregion
+
+        # region LOGIC: scr2 sell2
+        # if self.v_direction == 'Multi' and (low1 < open1 < close1) and not self.override:
+        #     resetted = 'L<O<C'
         #     if self.resetted != resetted:
         #         self.resetted = resetted
         #         # self.count_consecutive = 0
         #     if self.count_consecutive <= -3:
+        #         self.resetted = ''
         #         self.trigger_close = 'LONG'
         #         self.v_reason_close = resetted
         #         self.f_main3()
-        # elif self.v_direction == 'Empty' and (open1 < (high1 - 3)) and not self.override:
-        #     resetted = 'O<(H-3)'
+        # elif self.v_direction == 'Empty' and (close1 < open1 < high1) and not self.override:
+        #     resetted = 'C<O<H'
         #     if self.resetted != resetted:
         #         self.resetted = resetted
         #         # self.count_consecutive = 0
         #     if self.count_consecutive >= 3:
+        #         self.resetted = ''
         #         self.trigger_close = 'SHORT'
         #         self.v_reason_close = resetted
         #         self.f_main3()
-        # endregion
-
-        # region LOGIC: scr2 sell2
-        if self.v_direction == 'Multi' and (low1 < open1 < close1) and not self.override:
-            resetted = 'L<O<C'
-            if self.resetted != resetted:
-                self.resetted = resetted
-                # self.count_consecutive = 0
-            if self.count_consecutive <= -3:
-                self.resetted = ''
-                self.trigger_close = 'LONG'
-                self.v_reason_close = resetted
-                self.f_main3()
-        elif self.v_direction == 'Empty' and (close1 < open1 < high1) and not self.override:
-            resetted = 'C<O<H'
-            if self.resetted != resetted:
-                self.resetted = resetted
-                # self.count_consecutive = 0
-            if self.count_consecutive >= 3:
-                self.resetted = ''
-                self.trigger_close = 'SHORT'
-                self.v_reason_close = resetted
-                self.f_main3()
         # endregion
 
         if script2:
@@ -818,9 +902,11 @@ class MainFunction:
             # ['date', self.f_current_time(out='date') if not note2 else ''],
             ['note2', self.note2],
             ['time', self.f_current_time(out='time') if not note2 else ''],
+            ['evat_dir', self.v_direction_evat if not note2 else ''],
             ['direction', self.v_direction if not note2 else ''],
             ['tv_price', '{:.2f}'.format(self.v_latest_price) if not note2 else ''],
-            # ['evat_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
+            ['evat_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
+            ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
             ['vol', '{:.2f}'.format(Variables.Misc.tv_vol) if not note2 else ''],
             ['evat_balance', '{:.2f}'.format(self.v_bal_elw) if not note2 else ''],
             ['sim_balance', '{:.2f}'.format(self.v_bal) if not note2 else ''],
@@ -860,7 +946,6 @@ class MainFunction:
             # ['last_rev', self.cumulative_value_str2 if not note2 else ''],
             # ['to_SL/to_TP', self.v_tp_sl_str if not note2 else ''],
             # ['aop', '{:.2f}'.format(self.v_aop) if not note2 else ''],
-            # ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
             # ['aop-esp', '{:.2f}'.format(self.v_diff) if not note2 else ''],
             # ['alert1', f"{self.alerts_dict['ALERT1'][0]}" if not note2 else ''],
             # ['recent', f"{self.alerts_dict['ALERT1'][1]}" if not note2 else ''],
@@ -974,16 +1059,28 @@ class MainFunction:
             self.driver.get(Variables.Misc.url_evatcoin)
             time.sleep(2)
 
+        self.driver.get(Variables.Misc.url_evatcoin)
+        time.sleep(0.1)
+
         try:
-            self.v_bal_elw = extract_float_numbers(self.driver.find_element(By.XPATH, Variables.XPaths.evatcoin_balance).text)
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_current_price).click
+        except:
+            time.sleep(1)
+
+        try:
+            self.v_bal_elw = extract_float_numbers(self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_balance).text)
         except:
             self.v_bal_elw = float(0)
 
-        # try:
-        #     self.v_latest_price_evat = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_current_price))).text
-        #     self.v_latest_price_evat = float(self.v_latest_price_evat[:-1])
-        # except:
-        #     self.v_latest_price_evat = float(0)
+        try:
+            self.v_direction_evat = self.driver.find_element(By.XPATH, Variables.XPaths.evatcoin_direction).text
+        except:
+            self.v_direction_evat = 'NO_POS'
+
+        try:
+            self.v_esp = extract_float_numbers(self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_esp).text)
+        except:
+            self.v_esp = float(0)
 
         # if len(self.prices_list) >= 120:
         #     self.prices_list.pop(0)
@@ -1005,6 +1102,17 @@ class MainFunction:
 
         self.v_unrealized = (float(self.v_bal_leaf * (self.v_yield / 100)))
         self.v_bal = self.v_bal_open + self.v_bal_leaf * (self.v_yield / 100)
+
+        test = True
+        while test:
+            print(test)
+            print(self.v_latest_price_evat)
+            try:
+                self.v_latest_price_evat = extract_float_numbers(self.driver.find_element(By.XPATH, Variables.XPaths.evatcoin_current_price).text)
+                test = False
+            except:
+                time.sleep(1)
+
         print('SCRAPING EVATCOIN DONE')
 
     def f_get_data_tradingview(self):
@@ -1046,7 +1154,6 @@ class MainFunction:
                     Variables.Misc.tv_vol = float(Variables.Misc.tv_vol)
                 except:
                     Variables.Misc.tv_vol = float(0)
-                    raise ValueError('tv_vol fail')
                 for key in Variables.Misc.tv_HA:
                     Variables.Misc.tv_HA[key][1] = self.driver.find_element(By.XPATH, Variables.Misc.tv_HA[key][0]).text
 
@@ -1072,10 +1179,10 @@ class MainFunction:
 
                 self.raw_data_message = f'{raw_data[1]}'
                 try:
-                    if not (any(s.lower() in self.raw_data_message.lower() for s in [self.alerts_dict[key][0].lower() for key in self.alerts_dict])):
-                        raise ValueError('WrongFormat')
-                    if not (any(s.lower() in self.raw_data_message.lower() for s in ['long', 'short'])):
-                        raise ValueError('WrongFormat')
+                    # if not (any(s.lower() in self.raw_data_message.lower() for s in [self.alerts_dict[key][0].lower() for key in self.alerts_dict])):
+                    #     raise ValueError('WrongFormat')
+                    # if not (any(s.lower() in self.raw_data_message.lower() for s in ['long', 'short'])):
+                    #     raise ValueError('WrongFormat')
                     self.raw_data_message = raw_data[1]
                     raw_data_message_splitted = self.raw_data_message.split(',')
                     self.alert_new = self.f_process_alert_new(raw_data_message_splitted)
@@ -1166,33 +1273,39 @@ class MainFunction:
         return ','.join(items)
 
     def f_open_position(self, direction, full=True):
+        if direction.upper() == 'LONG':
+            self.v_direction = 'Multi'
+        else:
+            self.v_direction = 'Empty'
         if full:
             self.v_aop = float(self.v_latest_price)
             self.v_bal = self.v_bal - 0.005 * self.v_bal
             self.v_bal_open = self.v_bal
-            if direction.upper() == 'LONG':
-                self.v_direction = 'Multi'
-            else:
-                self.v_direction = 'Empty'
             print(f'{self.v_bal} - {direction}')
             # self.f_update_textbox(f"{direction.upper()} opened: {self.v_reason_open}", True, True)
             self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
             self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
             self.note2 = ''
-
-        self.driver.switch_to.window(self.driver.window_handles[0])
-
+        self.f_get_data_evatcoin()
+        if self.v_direction_evat == 'NO_POS':
+            # self.f_open_evat()
+            print('open evat')
         return
 
-    def f_close_position(self):
-        self.v_aop = 0
-        self.v_bal = self.v_bal - 0.005 * self.v_bal
-        self.v_bal_open = self.v_bal
+    def f_close_position(self, full=True):
         self.v_direction = 'NO_POS'
-        # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
-        self.note2 = f"C: {self.v_reason_close}"
-        self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
-        self.note2 = ''
+        if full:
+            self.v_aop = 0
+            self.v_bal = self.v_bal - 0.005 * self.v_bal
+            self.v_bal_open = self.v_bal
+            # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
+            self.note2 = f"C: {self.v_reason_close}"
+            self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+            self.note2 = ''
+        if self.v_direction_evat != 'NO_POS':
+            # self.f_close_evat()
+            time.sleep(7)
+            print('close evat')
         return
 
 def extract_float_numbers(string):

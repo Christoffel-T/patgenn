@@ -19,6 +19,7 @@ ft.update_text(f'Initializing...\nPlease restart the script if this process took
 mainfunction = MainFunction(floating_text_obj=ft, root=root)
 
 mainfunction.f_open_chrome()
-for i in range(3):
-    mainfunction.f_open_position(direction='SHORT', full=False)
-    time.sleep(1)
+mainfunction.f_open_position('SHORT', full=False)
+time.sleep(10)
+mainfunction.f_close_position(full=False)
+time.sleep(1)
