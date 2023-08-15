@@ -1,17 +1,17 @@
 from __future__ import print_function
 
-import math
-import re
 import base64
 import ctypes
+import math
 import os
+import re
 import sys
 import time
 import tkinter as tk
 from datetime import datetime
 from tkinter import messagebox
-import gspread
 
+import gspread
 import pyautogui
 import requests
 # from googleapiclient.errors import HttpError
@@ -19,13 +19,9 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Variables:
@@ -88,7 +84,8 @@ class Variables:
         evatcoin_close_position = '/html/body/div[1]/main/div/div[1]/div[3]/div[1]/div[2]/a'
         evatcoin_close_quantity = '/html/body/div/main/div/div[1]/div[3]/div[2]/div[2]/input'
         evatcoin_leaf_bought = '/html/body/div[1]/main/div/div[2]/div[1]/div[2]/div/table/tbody/tr/td[5]'
-        tradingview_volume = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[9]/div[2]'
+        # tradingview_volume = '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[9]/div[2]'
+        tradingview_volume = '/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[3]/td[2]/div/div[3]/div/div/span[1]'
         elw_chart_5m = '/html/body/div[1]/div[2]/div/div/div[2]/div[8]/div'
         tradingview_logs = {}
         for i in range(1, 10):
@@ -96,11 +93,17 @@ class Variables:
         tradingview_charts = {}
         for i in range(1, 9):
             tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
+        # tradingview_ohlc = {
+        #     'O': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
+        #     'H': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
+        #     'L': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
+        #     'C': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
+        # }
         tradingview_ohlc = {
-            'O': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
-            'H': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
-            'L': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[4]/div[2]',float(0)],
-            'C': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
+            'O': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[1]/span[2]',float(0)],
+            'H': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[2]/span[2]',float(0)],
+            'L': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[3]/span[2]',float(0)],
+            'C': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[4]/span[2]',float(0)],
         }
 
 
@@ -117,7 +120,7 @@ class Variables:
         url_github = 'https://api.github.com/repos/Christoffel-T/fiverr-pat-20230331/contents/'
         filename = 'Yields.csv'
         chrome_user_profile = os.environ['USERPROFILE'] + r"\AppData\Local\Google\Chrome\User Data"
-        tv_vol = float(0)
+        tv_vol = ''
         tradingview_charts_data = {}
         for i in range(1, 9):
             tradingview_charts_data[i] = '-'
@@ -197,6 +200,11 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.count_stoploss = 0
+        self.qualifier_stoploss = ''
+        self.count_sudden = 0
+        self.diff = float(0)
+        self.no_repeat_time = None
         self.state_prclpr = ''
         self.prclpr = float(0)
         self.count_consecutive_sum = 0
@@ -266,7 +274,7 @@ class MainFunction:
         self.v_yield_temp = float(0)
         self.v_aop_temp = float(0)
         self.v_aop = float(0)
-        self.v_bal = float(26000)
+        self.v_bal = float(54000)
         self.v_percentage = 1
         self.leaf_size = 5
         self.v_buy_qty = math.floor((self.v_bal*self.v_percentage)/self.leaf_size)
@@ -342,7 +350,7 @@ class MainFunction:
 
     def f_close_evat(self):
         try:
-            self.driver.switch_to.window(self.driver.window_handles[0])
+            # self.driver.switch_to.window(self.driver.window_handles[0])
             time.sleep(1)
             self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_hirakura).click()
             time.sleep(1)
@@ -361,7 +369,7 @@ class MainFunction:
 
     def f_open_evat(self):
         try:
-            if self.v_bal < 5:
+            if self.v_bal_elw < 10:
                 return
             self.driver.switch_to.window(self.driver.window_handles[0])
             time.sleep(1)
@@ -397,6 +405,7 @@ class MainFunction:
         self.f_update_textbox('SCRIPT_STARTED', True, True)
         self.trigger_open_count = 0
         self.LocalSheets = LocalSheets()
+        self.no_repeat_time = datetime.now()
         while True:
             if self.f_main2() == 'break':
                 break
@@ -471,12 +480,12 @@ class MainFunction:
         self.trigger_close_short = False
         self.trigger_close_long = False
 
-        if (now.minute + 1) % int(300 / 60) == 0 and 49 <= now.second < 59:
+        if now.minute in [14, 29, 44, 59] and 54 <= now.second <= 59:
             self.prclpr = self.v_latest_price
         for key in self.script_timeframe:
-            if key == 304:
-                self.f_last_reset_time(now, key, offset=-1)
-            elif key == 306:
+            # if key == 304:
+            #     self.f_last_reset_time(now, key, offset=-1)
+            if key == 306:
                 self.f_last_reset_time(now, key, offset=1)
             else:
                 self.f_last_reset_time(now, key)
@@ -537,8 +546,6 @@ class MainFunction:
         # endregion1
 
         diff_previous = self.v_latest_price - self.v_previous_price
-        consec1 = 3
-        consec2 = 3
 
         # region GET-DATA: Misc
         if self.v_latest_price > self.v_previous_price:
@@ -547,6 +554,7 @@ class MainFunction:
             if self.count_consecutive == 0:
                 self.anchor_price = self.v_previous_price
             self.count_consecutive += 1
+            self.count_stoploss += 1
             self.count_consecutive_sum += 1
         elif self.v_latest_price < self.v_previous_price:
             if self.count_consecutive > 0:
@@ -554,10 +562,12 @@ class MainFunction:
             if self.count_consecutive == 0:
                 self.anchor_price = self.v_previous_price
             self.count_consecutive -= 1
+            self.count_stoploss -= 1
             self.count_consecutive_sum -= 1
 
         self.subtext1 = ''
-        diff = self.v_latest_price - self.anchor_price
+        self.diff = self.v_latest_price - self.anchor_price
+        diff = self.diff
         self.diff_5min = self.v_latest_price - self.anchor_price_2
         percent_diff = 0
         if self.anchor_price != 0:
@@ -637,7 +647,7 @@ class MainFunction:
         open1 = Variables.XPaths.tradingview_ohlc['O'][1]
         low1 = Variables.XPaths.tradingview_ohlc['L'][1]
         high1 = Variables.XPaths.tradingview_ohlc['H'][1]
-        close1 = Variables.XPaths.tradingview_ohlc['C'][1]
+        # close1 = Variables.XPaths.tradingview_ohlc['C'][1]
 
         self.str_profit_loss = "{:.2f}".format(self.v_bal - self.v_bal_open - self.v_bal * 0.005 - self.v_bal_open * 0.005)
 
@@ -646,41 +656,63 @@ class MainFunction:
 
         if self.v_esp != 0:
             if self.v_latest_price <= (self.v_esp + var1) and self.v_direction == 'Multi':
+                if self.count_stoploss < 0:
+                    self.count_stoploss = 0
+                self.qualifier_stoploss = 'LONG'
+            elif self.v_latest_price >= (self.v_esp - var1) and self.v_direction == 'Empty':
+                if self.count_stoploss > 0:
+                    self.count_stoploss = 0
+                self.qualifier_stoploss = 'SHORT'
+
+            if self.qualifier_stoploss == 'LONG' and self.count_stoploss >= 1:
+                self.qualifier_stoploss = ''
+                self.count_stoploss = 0
                 resetted = f'STOPLOSS: <esp+{var1}'
                 self.opened_by = ''
                 self.v_reason_close = resetted
                 self.trigger_close = 'LONG'
                 self.f_main3()
-            if self.v_latest_price >= (self.v_esp - var1) and self.v_direction == 'Empty':
-                resetted = f'STOPLOSS: >esp-{var1}'
+            if self.qualifier_stoploss == 'SHORT' and self.count_stoploss >= 1:
+                self.qualifier_stoploss = ''
+                self.count_stoploss = 0
+                resetted = f'STOPLOSS: <esp+{var1}'
                 self.opened_by = ''
                 self.v_reason_close = resetted
-                self.trigger_close = 'SHORT'
+                self.trigger_close = 'LONG'
                 self.f_main3()
 
         # endregion
 
         # region LOGIC: SUDDEN
-        sudden = 100
-        if diff_previous >= sudden and self.v_direction == 'Empty':
+        sudden = 50
+        if diff_previous >= sudden:
+            if self.count_sudden < 0:
+                self.count_sudden = 0
+            self.count_sudden += 1
+        if diff_previous <= -sudden:
+            if self.count_sudden > 0:
+                self.count_sudden = 0
+            self.count_sudden -= 1
+        if self.count_sudden >= 2 and self.v_direction == 'Empty':
             self.trigger_close = 'SHORT'
             self.v_reason_close = f'SUDDEN_{sudden}'
             self.f_main3()
-        if diff_previous <= -sudden and self.v_direction == 'Multi':
+        if self.count_sudden <= -2 and self.v_direction == 'Multi':
             self.trigger_close = 'LONG'
             self.v_reason_close = f'SUDDEN_{sudden}'
             self.f_main3()
         # endregion
 
-        # region LOGIC: O=L O=H
-        if  open1 == low1:
+        # region LOGIC: O=L O=H together simultaneously with c>prc
+        if open1 == low1:
             resetted = 'O=L'
             self.opened_by = resetted
             if self.resetted != resetted:
                 self.resetted = resetted
-                self.count_consecutive = 0
             script2 = True
-            if self.v_direction != 'Multi' and self.count_consecutive >= 3 and self.count_consecutive_sum >= 3 and not self.override:
+            if self.v_direction != 'Multi' and \
+                    self.prclpr > 0 and (+ Variables.XPaths.tradingview_ohlc['C'][1] - self.prclpr) >= 5 and \
+                    not self.override:
                 self.resetted = ''
                 self.v_reason_close = resetted
                 self.trigger_close = 'SHORT'
@@ -693,9 +725,10 @@ class MainFunction:
             self.opened_by = resetted
             if self.resetted != resetted:
                 self.resetted = resetted
-                self.count_consecutive = 0
             script2 = True
-            if self.v_direction != 'Empty' and self.count_consecutive <= -3 and self.count_consecutive_sum <= -3 and not self.override:
+            if self.v_direction != 'Empty' and \
+                    self.prclpr > 0 and (- Variables.XPaths.tradingview_ohlc['C'][1] + self.prclpr) >= 5 and \
+                    not self.override:
                 self.resetted = ''
                 self.v_reason_close = resetted
                 self.trigger_close = 'LONG'
@@ -707,43 +740,39 @@ class MainFunction:
             script2 = True
         # endregion
 
-        # region LOGIC sc3/6 to sell
-        if self.count_consecutive >= 3 and \
-                self.script_timeframe[304][1][0] >= 9 and \
-                (self.opened_by == '(O-L)>=5' or self.opened_by == '(H-O)>=5') and \
-                self.count_consecutive_sum >= 3 and \
-                self.v_direction != 'Multi':
-            resetted = f'sc_5m_3 inc'
-            self.opened_by = resetted
-            self.anchor_price_2 = self.v_latest_price
-            self.count_consecutive_sum = 0
-            self.trigger_close = 'SHORT'
-            self.f_main3()
-            self.v_reason_open = resetted
-            self.trigger_open = 'LONG'
-            self.f_main3()
-            self.override = True
-            # self.count_consecutive = 0
-        elif self.count_consecutive <= -3 and \
-                self.script_timeframe[304][1][0] <= -9 and \
-                (self.opened_by == '(O-L)>=5' or self.opened_by == '(H-O)>=5') and \
-                self.count_consecutive_sum <= -3 and \
-                self.v_direction != 'Empty':
-            resetted = f'sc_5m_3 dec'
-            self.opened_by = resetted
-            self.anchor_price_2 = self.v_latest_price
-            self.count_consecutive_sum = 0
-            self.v_reason_close = resetted
-            self.trigger_close = 'LONG'
-            self.f_main3()
-            self.v_reason_open = resetted
-            self.trigger_open = 'SHORT'
-            self.f_main3()
-            self.override = True
-            # self.count_consecutive = 0
-        else:
-            self.override = False
-        # endregion
+        # region LOGIC SUM_Net/Notes
+        # if self.count_consecutive >= 2 and \
+        #         self.diff >= 3.7 and \
+        #         self.v_direction != 'Multi':
+        #     resetted = f'SUM_NET/Notes inc'
+        #     self.opened_by = resetted
+        #     self.anchor_price_2 = self.v_latest_price
+        #     self.count_consecutive_sum = 0
+        #     self.trigger_close = 'SHORT'
+        #     self.f_main3()
+        #     self.v_reason_open = resetted
+        #     self.trigger_open = 'LONG'
+        #     self.f_main3()
+        #     self.override = True
+        #     # self.count_consecutive = 0
+        # elif self.count_consecutive <= -2 and \
+        #         self.diff <= -3.7 and \
+        #         self.v_direction != 'Empty':
+        #     resetted = f'SUM_NET/Notes dec'
+        #     self.opened_by = resetted
+        #     self.anchor_price_2 = self.v_latest_price
+        #     self.count_consecutive_sum = 0
+        #     self.v_reason_close = resetted
+        #     self.trigger_close = 'LONG'
+        #     self.f_main3()
+        #     self.v_reason_open = resetted
+        #     self.trigger_open = 'SHORT'
+        #     self.f_main3()
+        #     self.override = True
+        #     # self.count_consecutive = 0
+        # else:
+        #     self.override = False
+        # endregion disabled
 
         # region LOGIC: PRCLPR disabled
         # if (close1 >= self.prclpr and open1 >= self.prclpr) and self.prclpr != 0:
@@ -796,33 +825,72 @@ class MainFunction:
         # endregion
 
         # region LOGIC: (O-L)>=5 (H-O)>=5
-        if self.v_direction == 'Multi' and (open1 >= (low1 + 5)) and not self.override:
+        if self.v_direction == 'Multi' and (open1 >= (low1 + 5)) and not self.override and now.minute >= self.no_repeat_time.minute+2 :
             resetted = '(O-L)>=5'
             self.opened_by = resetted
             if self.resetted != resetted:
                 self.resetted = resetted
-                self.count_consecutive = 0
             # if self.count_consecutive <= -3:
             self.trigger_close = 'LONG'
             self.v_reason_close = resetted
-            self.script_timeframe[304][1][0] = 0
             self.diff_5min = 0
             self.anchor_price_2 = self.v_latest_price
             self.count_consecutive_sum = 0
             self.f_main3()
-        elif self.v_direction == 'Empty' and (open1 <= (high1 - 5)) and not self.override:
+            self.no_repeat_time = now
+        elif self.v_direction == 'Empty' and (open1 <= (high1 - 5)) and not self.override and now.minute >= self.no_repeat_time.minute+2:
             resetted = '(H-O)>=5'
             self.opened_by = resetted
             if self.resetted != resetted:
                 self.resetted = resetted
-                self.count_consecutive = 0
             # if self.count_consecutive >= 3:
             self.trigger_close = 'SHORT'
             self.v_reason_close = resetted
-            self.script_timeframe[304][1][0] = 0
             self.diff_5min = 0
             self.anchor_price_2 = self.v_latest_price
             self.count_consecutive_sum = 0
+            self.f_main3()
+        # endregion
+
+        # region C<>PRCLPR
+        if self.prclpr > 0 and (+ Variables.XPaths.tradingview_ohlc['C'][1] - self.prclpr) >= 5 and self.v_direction != 'Multi':
+            resetted = f'C>PRCLPR'
+            self.no_repeat_time = now
+            self.trigger_close = 'SHORT'
+            self.v_reason_close = resetted
+            self.f_main3()
+            self.trigger_open = 'LONG'
+            self.v_reason_open = resetted
+            self.f_main3()
+        if self.prclpr > 0 and (- Variables.XPaths.tradingview_ohlc['C'][1] + self.prclpr) >= 5 and self.v_direction != 'Empty':
+            resetted = f'C<PRCLPR'
+            self.no_repeat_time = now
+            self.trigger_close = 'LONG'
+            self.v_reason_close = resetted
+            self.f_main3()
+            self.trigger_open = 'SHORT'
+            self.v_reason_open = resetted
+            self.f_main3()
+        # endregion
+
+        # region C<>O<>PRCLPR
+        if 0 < self.prclpr < Variables.XPaths.tradingview_ohlc['O'][1] < Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
+            resetted = f'C>O>PRCLPR'
+            self.no_repeat_time = now
+            self.trigger_close = 'SHORT'
+            self.v_reason_close = resetted
+            self.f_main3()
+            self.trigger_open = 'LONG'
+            self.v_reason_open = resetted
+            self.f_main3()
+        if 0 < self.prclpr and self.prclpr > Variables.XPaths.tradingview_ohlc['O'][1] > Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
+            resetted = f'C<O<PRCLPR'
+            self.no_repeat_time = now
+            self.trigger_close = 'LONG'
+            self.v_reason_close = resetted
+            self.f_main3()
+            self.trigger_open = 'SHORT'
+            self.v_reason_open = resetted
             self.f_main3()
         # endregion
 
@@ -923,7 +991,6 @@ class MainFunction:
                 self.f_open_position(self.trigger_open)
                 self.trigger_open = ''
                 # self.count_consecutive = 0
-                self.script_timeframe[300][1][0] = 0
         elif self.v_direction == 'Empty':
             if self.trigger_close == 'SHORT':
                 self.trigger_close = ''
@@ -952,14 +1019,16 @@ class MainFunction:
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
             if key == 304:
-                offset2 = -2
-                condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset2) % int(key / 60) == 0
-                if not condition:
-                    offset2 = -4
-                    condition = (now - self.script_timeframe[key][0]).seconds >= 30 and (now.minute - offset2) % int(key / 60) == 0
-                if not condition:
-                    offset2 = -1
-                    condition = (now - self.script_timeframe[key][0]).seconds >= 30 and (now.minute - offset2) % int(key / 60) == 0
+                # condition = 30 <= (now - self.script_timeframe[key][0]).seconds <= 32
+                condition = 29 <= now.second <= 31 or 59 <= now.second or 0 <= now.second <= 1
+                # offset2 = -2
+                # condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset2) % int(key / 60) == 0
+                # if not condition:
+                #     offset2 = -4
+                #     condition = (now - self.script_timeframe[key][0]).seconds >= 30 and (now.minute - offset2) % int(key / 60) == 0
+                # if not condition:
+                #     offset2 = -1
+                #     condition = (now - self.script_timeframe[key][0]).seconds >= 30 and (now.minute - offset2) % int(key / 60) == 0
             else:
                 condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset) % int(key/60) == 0
             if key == 306:
@@ -984,15 +1053,15 @@ class MainFunction:
         list_output = [
             ['unr_p/l', '{:.2f}'.format(self.v_unrealized) if not note2 else ''],
             ['yld', '{:.2f}'.format(self.v_yield) if not note2 else ''],
-            # ['date', self.f_current_time(out='date') if not note2 else ''],
             ['note2', self.note2],
+            ['date', self.f_current_time(out='date') if not note2 else ''],
             ['time', self.f_current_time(out='time') if not note2 else ''],
             ['evat_dir', self.v_direction_evat if not note2 else ''],
             ['direction', self.v_direction if not note2 else ''],
-            ['tv_price', '{:.2f}'.format(self.v_latest_price) if not note2 else ''],
-            ['evat_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
+            ['C_price', '{:.2f}'.format(self.v_latest_price) if not note2 else ''],
+            ['elw_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
             ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
-            ['vol', '{:.2f}'.format(Variables.Misc.tv_vol) if not note2 else ''],
+            ['vol', Variables.Misc.tv_vol if not note2 else ''],
             ['evat_balance', '{:.2f}'.format(self.v_bal_elw) if not note2 else ''],
             ['sim_balance', '{:.2f}'.format(self.v_bal) if not note2 else ''],
             # ['tv_5s', f'\'{Variables.Misc.tradingview_charts_data[1]}' if not note2 else ''],
@@ -1009,6 +1078,11 @@ class MainFunction:
             # ['script', f"\'{self.note3}" if not note2 else ''],
             ['sum_net', f"\'{'{:.2f}'.format(self.diff_5min)}" if not note2 else ''],
             ['note', note if not note2 else ''],
+            ['PRCLPR', f"\'{'{:.2f}'.format(self.prclpr)}" if not note2 else ''],
+            ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
+            ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
+            ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
+            ['C', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['C'][1])}" if not note2 else ''],
             ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
             ['sc_10s', f'\'{self.script_timeframe[10][2]}' if not note2 else ''],
             ['sc_15s', f'\'{self.script_timeframe[15][2]}' if not note2 else ''],
@@ -1018,11 +1092,6 @@ class MainFunction:
             ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
             ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
             ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
-            ['PRCLPR', f"\'{'{:.2f}'.format(self.prclpr)}" if not note2 else ''],
-            ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
-            ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
-            ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
-            ['C', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['C'][1])}" if not note2 else ''],
             # ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}' if not note2 else ''],
             # ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}' if not note2 else ''],
             # ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}' if not note2 else ''],
@@ -1168,13 +1237,17 @@ class MainFunction:
         except:
             self.v_esp = float(0)
 
-        # if len(self.prices_list) >= 120:
-        #     self.prices_list.pop(0)
-        #
-        # self.prices_list.append(float(self.v_latest_price))
-        #
-        # if all(val == self.prices_list[0] for val in self.prices_list):
-        #     self.driver.get(Variables.Misc.url_evatcoin)
+        while len(self.prices_list) >= 200:
+            self.prices_list.pop(0)
+
+        self.prices_list.append(float(self.v_latest_price))
+
+        if all(val == self.prices_list[0] for val in self.prices_list) and len(self.prices_list) > 150:
+            self.driver.get(Variables.Misc.url_evatcoin)
+            self.prices_list.pop(0)
+            self.prices_list.pop(0)
+            self.prices_list.append(float(123))
+            self.prices_list.append(float(self.v_latest_price))
 
         if self.v_direction == 'Multi':
             self.v_tp_sl_str = f"{'{:.2f}'.format(float(self.v_latest_price) - ((float(self.v_aop)) - ((float(self.v_aop) * float(self.percent_stop_loss)) / (100 * Variables.Misc.leverage))))}/{'{:.2f}'.format(-float(self.v_latest_price) + ((float(self.v_aop)) + ((float(self.v_aop) * float(self.percent_take_profit)) / (100 * Variables.Misc.leverage))))}"
@@ -1206,36 +1279,39 @@ class MainFunction:
             if Variables.Misc.state_break:
                 break
             try:
-                self.driver.switch_to.window(self.driver.window_handles[1])
+                # self.driver.switch_to.window(self.driver.window_handles[1])
                 print('SCRAPING TRADINGVIEW')
-                # outer_iframe = WebDriverWait(self.driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.TAG_NAME, 'iframe')))
+                self.driver.find_element(By.XPATH, '/html/body/div/main/div/div[1]/div[1]/div[1]/div[1]/div[2]').click()
+                WebDriverWait(self.driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.TAG_NAME, 'iframe')))
                 # inner_iframe = self.driver.find_element(By.TAG_NAME, 'iframe')
                 # self.driver.switch_to.frame(inner_iframe)
-                # legend = self.driver.find_element(By.CLASS_NAME, 'pane-legend')
-                # pass_1 = False
-                # while not pass_1:
-                #     try:
-                #         pane_legend_item_value_title = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value-title')
-                #         pane_legend_item_value = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value ')
-                #         pane_legend_item_value[0].click()
-                #         line_text = ''
-                #         index = 0
-                #         for title in pane_legend_item_value_title:
-                #             if index == 0:
-                #                 Variables.XPaths.tradingview_ohlc['O'][1] = Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
-                #             if index == 1:
-                #                 Variables.XPaths.tradingview_ohlc['H'][1] = Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
-                #             if index == 2:
-                #                 Variables.XPaths.tradingview_ohlc['L'][1] = Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
-                #             if index == 3:
-                #                 Variables.XPaths.tradingview_ohlc['C'][1] = Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
-                #                 self.v_latest_price = Variables.XPaths.tradingview_ohlc['C'][1]
-                #             # line_text += title.text + ': ' + pane_legend_item_value[index].text + ' '
-                #             index += 1
-                #             pass_1 = True
-                #     except:
-                #         print('no element found')
-                #         time.sleep(1)
+                legend = self.driver.find_element(By.CLASS_NAME, 'pane-legend')
+                pass_1 = False
+                while not pass_1:
+                    try:
+                        pane_legend_item_value_title = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value-title')
+                        pane_legend_item_value = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value')
+                        # pane_legend_item_value[0].click()
+                        index = 0
+                        for title in pane_legend_item_value_title:
+                            print(title)
+                            if index == 0:
+                                Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                            if index == 1:
+                                Variables.XPaths.tradingview_ohlc['H'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                            if index == 2:
+                                Variables.XPaths.tradingview_ohlc['L'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                            if index == 3:
+                                Variables.XPaths.tradingview_ohlc['C'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                                self.v_latest_price = Variables.XPaths.tradingview_ohlc['C'][1]
+                            # line_text += title.text + ': ' + pane_legend_item_value[index].text + ' '
+                            index += 1
+                            pass_1 = True
+                    except Exception as e:
+                        print(e)
+                        time.sleep(1)
+                self.v_latest_price = float(
+                    self.driver.find_element(By.CSS_SELECTOR, 'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div > div > span:nth-child(4) > span.pane-legend-item-value.pane-legend-line.pane-legend-item-value__main').text)
 
                 try:
                     self.v_latest_price = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
@@ -1266,9 +1342,10 @@ class MainFunction:
                 #     continue
                 try:
                     Variables.Misc.tv_vol = self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_volume).text
-                    Variables.Misc.tv_vol = float(Variables.Misc.tv_vol)
+                    # Variables.Misc.tv_vol = float(Variables.Misc.tv_vol)
                 except:
-                    Variables.Misc.tv_vol = float(0)
+                    Variables.Misc.tv_vol = ''
+                    # Variables.Misc.tv_vol = float(0)
                 # for key in Variables.Misc.tv_HA:
                 #     Variables.Misc.tv_HA[key][1] = self.driver.find_element(By.XPATH, Variables.Misc.tv_HA[key][0]).text
 
@@ -1279,7 +1356,8 @@ class MainFunction:
                 Variables.XPaths.tradingview_ohlc['C'][1] = self.v_latest_price
                 if prev_close != Variables.XPaths.tradingview_ohlc['C'][1]:
                     Variables.XPaths.tradingview_ohlc_prev['C'][1] = prev_close
-
+                print(Variables.XPaths.tradingview_ohlc['O'][1])
+                print(Variables.XPaths.tradingview_ohlc['H'][1])
                 # for i in range(1, 9):
                 #     Variables.Misc.tradingview_charts_data[i] = self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_charts[i]).text
                 #     text = Variables.Misc.tradingview_charts_data[i]
@@ -1360,9 +1438,9 @@ class MainFunction:
 
             self.driver.get(Variables.Misc.url_evatcoin)
             self.driver.execute_script('window.open("");')
-            self.driver.switch_to.window(self.driver.window_handles[1])
+            self.driver.switch_to.window(self.driver.window_handles[0])
             time.sleep(0.2)
-            self.driver.get(Variables.Misc.url_tradingview)
+            # self.driver.get(Variables.Misc.url_tradingview)
             return self.driver
         except Exception as e:
             print(e)
@@ -1404,7 +1482,7 @@ class MainFunction:
             self.note2 = ''
         self.f_get_data_evatcoin()
         if self.v_direction_evat == 'NO_POS':
-            # self.f_open_evat()
+            self.f_open_evat()
             print('open evat')
         return
 
@@ -1441,6 +1519,7 @@ class LocalSheets:
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
         self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE, scopes=self.SCOPES)
         self.SPREADSHEET_ID = '14H-OyOk_rdHtuTCj6lRj5C1__BJksgskzBg9G5NOCpo'
+        # self.SPREADSHEET_ID = '1liNHmgvzUeCjYVIPTywnQEeavIgaB2e0BeJFmrqR5l8'
         self.service = build('sheets', 'v4', credentials=self.creds)
 
     def append(self, data):
@@ -1464,6 +1543,7 @@ class GoogleSheets:
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
         self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE, scopes=self.SCOPES)
         self.SPREADSHEET_ID = '14H-OyOk_rdHtuTCj6lRj5C1__BJksgskzBg9G5NOCpo'
+        # self.SPREADSHEET_ID = '1liNHmgvzUeCjYVIPTywnQEeavIgaB2e0BeJFmrqR5l8'
         self.service = build('sheets', 'v4', credentials=self.creds)
         self.localspreadsheet = LocalSheets().file
 
