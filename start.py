@@ -2,7 +2,7 @@ from classes import *
 import threading
 import psutil
 import subprocess
-# UPDATE1
+# UPDATE
 
 subprocess.Popen(['start', 'cmd', '/c', 'python', 'delete_rows.py'], shell=True)
 
