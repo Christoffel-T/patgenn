@@ -1,5 +1,5 @@
 ﻿#Requires AutoHotkey v2.0
-;update
+;update1
 win := "Exchange - Google Chrome"
 loop {
 	if !WinExist(win)
