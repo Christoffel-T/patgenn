@@ -2,7 +2,7 @@ from classes import *
 import ast
 
 gsheets = GoogleSheets()
-# UPDATE
+# UPDATE1
 
 while True:
     time.sleep(1)
