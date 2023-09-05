@@ -29,11 +29,11 @@ class Variables:
         def __init__(self):
             pass
 
-        evatcoin_leverage = ["body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.nav.nav-pills > div.flex-fill.px-3.justify-content-end.d-flex.align-items-center > span > span > div",
-                             "[id^='el-popover-'] > div.list > div:nth-child(1)",
-                             "[id^='el-popover-'] > div.list > div:nth-child(2)",
-                             "[id^='el-popover-'] > div.list > div:nth-child(3)",
-                             "[id^='el-popover-'] > div.list > div:nth-child(4)",]
+        evatcoin_leverage = [
+            "body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.nav.nav-pills > div.flex-fill.px-3.justify-content-end.d-flex.align-items-center > span > span > div",
+            "[id^='el-popover-'] > div.list > div:nth-child(1)",
+            "[id^='el-popover-'] > div.list > div:nth-child(2)",
+            "[id^='el-popover-'] > div.list > div:nth-child(3)"]
         evatcoin_open_long = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(5) > div.px-2.flex-fill.mb-4 > button'
         evatcoin_open_short = 'body > div:nth-child(1) > main > div > div.page-top.d-flex.pt-2 > div.markets-pair-list.exchange-store.bg-plain > div.content-box.px-3 > div:nth-child(5) > div:nth-child(2) > button'
         evatcoin_open_confirm = 'body > div.el-message-box__wrapper > div > div.el-message-box__btns > button.el-button.el-button--default.el-button--small.el-button--primary'
@@ -52,10 +52,18 @@ class Variables:
         evatcoin_esp = "body > div:nth-child(1) > main > div > div.d-flex.pb-2.mt-2 > div.markets-pair-list.page-bottom.bg-plain.flex-fill > div.body > div > table > tbody > tr > td:nth-child(10)"
         elw_chart_5m = "body > div.js-rootresizer__contents > div.layout__area--top.header-chart-panel > div > div > div.left > div:nth-child(8) > div"
         elw_chart_ohlc = {
-            'O': ['body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(1)',float(0)],
-            'H': ['body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(2)',float(0)],
-            'L': ['body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(3)',float(0)],
-            'C': ['body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(4)',float(0)],
+            'O': [
+                'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(1)',
+                float(0)],
+            'H': [
+                'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(2)',
+                float(0)],
+            'L': [
+                'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(3)',
+                float(0)],
+            'C': [
+                'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div.pane-legend-line.pane-legend-wrap.main > div > span:nth-child(4)',
+                float(0)],
         }
         elw_chart_close_price = elw_chart_ohlc['C'][0]
 
@@ -89,10 +97,12 @@ class Variables:
         elw_chart_5m = '/html/body/div[1]/div[2]/div/div/div[2]/div[8]/div'
         tradingview_logs = {}
         for i in range(1, 10):
-            tradingview_logs[i] = f'/html/body/div[2]/div[6]/div/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div[{i+1}]'
+            tradingview_logs[
+                i] = f'/html/body/div[2]/div[6]/div/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div[{i + 1}]'
         tradingview_charts = {}
         for i in range(1, 9):
-            tradingview_charts[i] = f'/html/body/div[2]/div[5]/div[{i+1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
+            tradingview_charts[
+                i] = f'/html/body/div[2]/div[5]/div[{i + 1}]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[8]/div[2]'
         # tradingview_ohlc = {
         #     'O': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]',float(0)],
         #     'H': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[3]/div[2]',float(0)],
@@ -100,12 +110,15 @@ class Variables:
         #     'C': ['/html/body/div[2]/div[5]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[1]/div[1]/div[2]/div/div[5]/div[2]',float(0)],
         # }
         tradingview_ohlc = {
-            'O': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[1]/span[2]',float(0)],
-            'H': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[2]/span[2]',float(0)],
-            'L': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[3]/span[2]',float(0)],
-            'C': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[4]/span[2]',float(0)],
+            'O': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[1]/span[2]',
+                  float(0)],
+            'H': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[2]/span[2]',
+                  float(0)],
+            'L': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[3]/span[2]',
+                  float(0)],
+            'C': ['/html/body/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td[2]/div/div[3]/div/div/span[4]/span[2]',
+                  float(0)],
         }
-
 
     class Misc:
         def __init__(self):
@@ -131,16 +144,29 @@ class Variables:
         for i in range(1, 9):
             tradingview_charts_data1[i] = '-'
         tv_HA = {
-            1: ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[6]/div', float(0)],
-            2: ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[16]/div', float(0)],
-            3: ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[17]/div', float(0)],
-            4: ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[18]/div', float(0)],
-            5: ['/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[19]/div', float(0)],
+            1: [
+                '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[6]/div',
+                float(0)],
+            2: [
+                '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[16]/div',
+                float(0)],
+            3: [
+                '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[17]/div',
+                float(0)],
+            4: [
+                '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[18]/div',
+                float(0)],
+            5: [
+                '/html/body/div[2]/div[5]/div[9]/div[1]/div/table/tr[3]/td[2]/div/div[2]/div/div[2]/div[2]/div[2]/div/div[19]/div',
+                float(0)],
         }
-        leverage = 200
+
+        leverages = {50: [50, 0.01, 20], 100: [100, 0.02, 10], 200: [200, 0.04, 5]}
+        leverage = leverages[100]
         count_consec_1 = 0
         count_consec_2 = 0
         count_consec_3 = 0
+
 
 class FloatingText:
     def __init__(self, master):
@@ -156,7 +182,7 @@ class FloatingText:
         self.master.grid_rowconfigure(1, weight=1)
         self.master.resizable(False, False)
         self.master.wm_attributes("-topmost", True)
-        self.master.geometry(f"+{10}+{int(Variables.Misc.screen_height*0.6)}")
+        self.master.geometry(f"+{10}+{int(Variables.Misc.screen_height * 0.6)}")
 
     def update_text(self, new_text, show_ok=False):
         if Variables.Misc.state_break:
@@ -198,29 +224,42 @@ class FloatingText:
         self.master.deiconify()
         self.master.lift()
 
+
 class MainFunction:
     def __init__(self, floating_text_obj, root):
+        self.last_minute = -1
+        self.prclprs = [float(0)]
+        self.count_qualifier_SUM1 = 0
+        self.count_qualifier_SUM2 = 0
+        self.count_qualifier_SUM = float(0)
+        self.count_qualifier_NOTES = 0
+        self.disable_sum = False
+        self.count_qualifier_OHCPRC = 0
+        self.sum_net2 = [float(0), float(0), float(0), float(0)]
+        self.count_qualifier_COP = 0
+        self.count_qualifier_OLHO = 0
         self.count_stoploss = 0
         self.qualifier_stoploss = ''
         self.count_sudden = 0
-        self.diff = float(0)
+        self.diff = [float(0), float(0)]
+        self.diff_anchor = [float(0), float(0)]
         self.no_repeat_time = None
         self.state_prclpr = ''
-        self.prclpr = float(0)
+        self.prclpr = round(float(0),2)
         self.count_consecutive_sum = 0
         self.opened_by = ''
         self.v_direction_evat = ''
         self.v_bal_elw = float(0)
         self.override = False
         self.note3 = ''
-        self.diff_5min = float(0)
+        self.sum_net = [float(0), float(0), float(0), float(0)]
         self.resetted = ''
         self.price_close = 0
         self.price_low = 0
         self.price_high = 0
         self.price_open = 0
         self.str_profit_loss = ''
-        self.prices = []
+        self.prices = [float(0),float(0)]
         self.count_tfsc_long2 = 0
         self.count_tfsc_short2 = 0
         self.count_rows_2 = 0
@@ -229,7 +268,7 @@ class MainFunction:
         self.state_logic4 = ''
         self.state_logic3 = ''
         self.state_logic2 = ''
-        self.v_latest_price_evat = float(0)
+        self.v_evat_latest_price = float(0)
         self.take_profit = 0
         self.stop_loss = 0
         self.count_sc5m_short2 = 0
@@ -260,7 +299,6 @@ class MainFunction:
         self.count_consecutive = 0
         self.anchor_price_2 = float(0)
         self.anchor_price = float(0)
-        self.v_previous_price = float(0)
         self.trigger_open = ''
         self.trigger_close_count = 0
         self.alerts_csv_file = 'alerts.csv'
@@ -274,13 +312,12 @@ class MainFunction:
         self.v_yield_temp = float(0)
         self.v_aop_temp = float(0)
         self.v_aop = float(0)
-        self.v_bal = float(54000)
+        self.v_bal = float(72)
         self.v_percentage = 1
-        self.leaf_size = 5
-        self.v_buy_qty = math.floor((self.v_bal*self.v_percentage)/self.leaf_size)
-        self.v_bal_leaf = self.v_buy_qty*self.leaf_size
+        self.leaf_size = Variables.Misc.leverage[2]
+        self.v_buy_qty = math.floor((self.v_bal * self.v_percentage) / self.leaf_size)
+        self.v_bal_leaf = self.v_buy_qty * self.leaf_size
         self.v_diff = float(0)
-        self.v_latest_price = float(0)
         self.v_esp = float(0)
         self.v_unrealized = float(0)
         self.v_yield = float(0)
@@ -343,7 +380,7 @@ class MainFunction:
         self.state_break = False
         self.v_reload = False
         self.driver = None
-        self.prices_list = []
+        self.checker_prices = []
         self.alerts_dict = {
             'ALERT1': ['Heiken Ashi', '-', '-'],
         }
@@ -369,16 +406,20 @@ class MainFunction:
 
     def f_open_evat(self):
         try:
-            if self.v_bal_elw < 10:
+            if self.v_bal_elw < 55555.5:
+                print('NOT ENOUGH BALANCE')
                 return
             self.driver.switch_to.window(self.driver.window_handles[0])
             time.sleep(1)
             self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_leverage[0]).click()
             time.sleep(0.7)
-            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_leverage[4]).click()
+            self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_leverage[3]).click()
             time.sleep(1)
             input_elem = self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_buy_qty)
             input_elem.clear()
+            self.v_buy_qty = math.floor((self.v_bal * self.v_percentage) / self.leaf_size)
+            self.v_bal_leaf = self.v_buy_qty * self.leaf_size
+
             input_elem.send_keys(self.v_buy_qty)
             time.sleep(1)
             if self.v_direction == 'Multi':
@@ -406,9 +447,16 @@ class MainFunction:
         self.trigger_open_count = 0
         self.LocalSheets = LocalSheets()
         self.no_repeat_time = datetime.now()
-        while True:
-            if self.f_main2() == 'break':
-                break
+        loop = True
+        while loop:
+            try:
+                return_val = self.f_main2()
+                if return_val == 'break':
+                    loop = False
+            except Exception as e:
+                loop = True
+                print(e)
+                time.sleep(2)
 
     def f_main2(self):
 
@@ -432,7 +480,6 @@ class MainFunction:
         self.f_get_data_tradingview()
         self.f_get_data_evatcoin()
 
-        # now = datetime.now()
         subtext2 = ''
 
         if self.alerts_dict['ALERT1'][1] != self.alerts_dict['ALERT1'][2] and self.alerts_dict['ALERT1'][2] != '-':
@@ -441,9 +488,9 @@ class MainFunction:
             self.cumulative_percent2 = float(0)
         else:
             cumulative_value_previous2 = self.cumulative_value2
-            if self.v_previous_price != float(0):
-                self.cumulative_value2 += self.v_latest_price - self.v_previous_price
-            if self.v_latest_price == self.v_previous_price:
+            if self.prices[1] != float(0):
+                self.cumulative_value2 += self.prices[0] - self.prices[1]
+            if self.prices[0] == self.prices[1]:
                 if self.cumulative_value2 > 0:
                     self.cumulative_value_str2 = f"+{'{:.2f}'.format(self.cumulative_value2)}"
                 else:
@@ -480,8 +527,18 @@ class MainFunction:
         self.trigger_close_short = False
         self.trigger_close_long = False
 
-        if now.minute in [14, 29, 44, 59] and 54 <= now.second <= 59:
-            self.prclpr = self.v_latest_price
+        if now.minute in [x for x in range(14, 60, 15)] and 54 <= now.second <= 59:
+            self.prclpr = self.prices[0]
+        if now.minute in [x for x in range(0, 60, 15)] and now.minute not in [self.last_minute]:
+            self.prclprs.insert(0,self.prclpr)
+            self.last_minute = now.minute
+
+        if now.minute in [x for x in range(4, 60, 5)] and 55 <= now.second <= 59:
+            self.sum_net.insert(0, float(0))
+            self.sum_net2.insert(0, float(0))
+        if now.minute in [x for x in range(2, 60, 5)] and 26 <= now.second <= 30:
+            self.sum_net.insert(0, float(0))
+            self.sum_net2.insert(0, float(0))
         for key in self.script_timeframe:
             # if key == 304:
             #     self.f_last_reset_time(now, key, offset=-1)
@@ -519,8 +576,6 @@ class MainFunction:
         for key in self.script_timeframe:
             if key == 300:
                 self.script_timeframe[key][4] += self.script_timeframe[key][1][0] - self.script_timeframe[key][3]
-                self.diff_5min = float(0)
-                print(f"{self.script_timeframe[key][1][0]} - {self.script_timeframe[key][3]} = {self.script_timeframe[key][4]}")
                 if self.script_timeframe[key][4] > 0:
                     self.script_timeframe[key][5] = f"+{'{:.2f}'.format(self.script_timeframe[key][4])}"
                 else:
@@ -541,125 +596,70 @@ class MainFunction:
         #         self.trigger_close_long = True
         #         self.trigger_close_short = False
 
-        if self.v_previous_price == 0:
-            self.v_previous_price = self.v_latest_price
         # endregion1
 
-        diff_previous = self.v_latest_price - self.v_previous_price
-
         # region GET-DATA: Misc
-        if self.v_latest_price > self.v_previous_price:
+        if self.prices[0] > self.prices[1] > 0:
             if self.count_consecutive < 0:
                 self.count_consecutive = 0
             if self.count_consecutive == 0:
-                self.anchor_price = self.v_previous_price
+                self.anchor_price = self.prices[1]
             self.count_consecutive += 1
             self.count_stoploss += 1
-            self.count_consecutive_sum += 1
-        elif self.v_latest_price < self.v_previous_price:
+        elif self.prices[0] < self.prices[1] > 0:
             if self.count_consecutive > 0:
                 self.count_consecutive = 0
             if self.count_consecutive == 0:
-                self.anchor_price = self.v_previous_price
+                self.anchor_price = self.prices[1]
             self.count_consecutive -= 1
             self.count_stoploss -= 1
-            self.count_consecutive_sum -= 1
+
+        if self.anchor_price == 0:
+            self.anchor_price = self.prices[0]
 
         self.subtext1 = ''
-        self.diff = self.v_latest_price - self.anchor_price
-        diff = self.diff
-        self.diff_5min = self.v_latest_price - self.anchor_price_2
+        if self.prices[1] != 0:
+            self.diff.insert(0, self.prices[0] - self.prices[1])
+        self.diff_anchor.insert(0, self.prices[0] - self.anchor_price)
+        while len(self.diff) > 10:
+            self.diff.pop()
+        while len(self.diff_anchor) > 10:
+            self.diff_anchor.pop()
+        diff = self.diff_anchor[0]
+        self.sum_net.insert(0, self.sum_net[0] + self.diff[0])
+        self.sum_net2.insert(0, self.sum_net2[0] + self.diff[0])
+        while len(self.sum_net) > 5:
+            self.sum_net.pop()
+        while len(self.sum_net2) > 5:
+            self.sum_net2.pop()
         percent_diff = 0
         if self.anchor_price != 0:
             percent_diff = (diff / self.anchor_price) * 100
         percent_diff_str = f"{'{:.4f}'.format(percent_diff)}%"
 
         if self.count_consecutive > 0:
-            self.subtext1 = f"inc={abs(self.count_consecutive)} - by: {'{:.2f}'.format(diff)} ({percent_diff_str})"
+            self.subtext1 = f"inc={abs(self.count_consecutive)} - by: {'{:.2f}'.format(self.diff_anchor[0])} ({percent_diff_str})"
         elif self.count_consecutive < 0:
-            self.subtext1 = f"dec={abs(self.count_consecutive)} - by: {'{:.2f}'.format(diff)} ({percent_diff_str})"
+            self.subtext1 = f"dec={abs(self.count_consecutive)} - by: {'{:.2f}'.format(self.diff_anchor[0])} ({percent_diff_str})"
 
-        self.v_previous_price = self.v_latest_price
         text = f'{self.note}{self.subtext1}{subtext2}'
         self.f_update_textbox(f'{text}')
 
-        # if float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00':
-        #     if Variables.Misc.count_consec_1 < 0:
-        #         Variables.Misc.count_consec_1 = 0
-        #     elif Variables.Misc.tradingview_charts_data2[8][0] > Variables.Misc.tradingview_charts_data2[8][1]:
-        #         Variables.Misc.count_consec_1 += 1
-        #     Variables.Misc.tradingview_charts_data2[8][1] = Variables.Misc.tradingview_charts_data2[8][0]
-        # if float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00':
-        #     if Variables.Misc.count_consec_1 > 0:
-        #         Variables.Misc.count_consec_1 = 0
-        #         Variables.Misc.count_consec_1 = 0
-        #     elif Variables.Misc.tradingview_charts_data2[8][0] < Variables.Misc.tradingview_charts_data2[8][1]:
-        #         Variables.Misc.count_consec_1 += 1
-        #     Variables.Misc.tradingview_charts_data2[8][1] = Variables.Misc.tradingview_charts_data2[8][0]
-
-        if self.script_timeframe[304][1][0] > 0:
-            if Variables.Misc.count_consec_2 < 0:
-                Variables.Misc.count_consec_2 = 0
-                self.count_rows_2 = 0
-            elif self.script_timeframe[304][1][0] > self.script_timeframe[304][1][1]:
-                Variables.Misc.count_consec_2 += 1
-            elif self.script_timeframe[304][1][0] < self.script_timeframe[304][1][1]:
-                Variables.Misc.count_consec_2 = 0
-            self.count_rows_2 += 1
-            self.script_timeframe[304][1][1] = self.script_timeframe[304][1][0]
-        if self.script_timeframe[304][1][0] < 0:
-            if Variables.Misc.count_consec_2 > 0:
-                Variables.Misc.count_consec_2 = 0
-                self.count_rows_2 = 0
-            elif self.script_timeframe[304][1][0] < self.script_timeframe[304][1][1]:
-                Variables.Misc.count_consec_2 -= 1
-            elif self.script_timeframe[304][1][0] > self.script_timeframe[304][1][1]:
-                Variables.Misc.count_consec_2 = 0
-            self.count_rows_2 -= 1
-            self.script_timeframe[304][1][1] = self.script_timeframe[304][1][0]
-
-        if self.script_timeframe[306][1][0] > 0:
-            if Variables.Misc.count_consec_3 < 0:
-                Variables.Misc.count_consec_3 = 0
-                self.count_rows_3 = 0
-            elif self.script_timeframe[306][1][0] > self.script_timeframe[306][1][1]:
-                # if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] >= 5:
-                #     Variables.Misc.count_consec_3 += 1
-                Variables.Misc.count_consec_3 += 1
-            elif self.script_timeframe[306][1][0] < self.script_timeframe[306][1][1]:
-                Variables.Misc.count_consec_3 = 0
-            self.count_rows_3 += 1
-            self.script_timeframe[306][1][1] = self.script_timeframe[306][1][0]
-        if self.script_timeframe[306][1][0] < 0:
-            if Variables.Misc.count_consec_3 > 0:
-                Variables.Misc.count_consec_3 = 0
-                self.count_rows_3 = 0
-            elif self.script_timeframe[306][1][0] < self.script_timeframe[306][1][1]:
-                # if self.script_timeframe[306][1][0] - self.script_timeframe[306][1][1] <= -5:
-                #     Variables.Misc.count_consec_3 -= 1
-                Variables.Misc.count_consec_3 -= 1
-            elif self.script_timeframe[306][1][0] > self.script_timeframe[306][1][1]:
-                Variables.Misc.count_consec_3 = 0
-            self.count_rows_3 -= 1
-            self.script_timeframe[306][1][1] = self.script_timeframe[306][1][0]
         # endregion
 
-        open1 = Variables.XPaths.tradingview_ohlc['O'][1]
-        low1 = Variables.XPaths.tradingview_ohlc['L'][1]
-        high1 = Variables.XPaths.tradingview_ohlc['H'][1]
-        # close1 = Variables.XPaths.tradingview_ohlc['C'][1]
+        self.f_LOGICS()
+        return
 
-        self.str_profit_loss = "{:.2f}".format(self.v_bal - self.v_bal_open - self.v_bal * 0.005 - self.v_bal_open * 0.005)
-
+    def f_LOGICS(self):
         # region LOGIC: stoploss
         var1 = 20
 
         if self.v_esp != 0:
-            if self.v_latest_price <= (self.v_esp + var1) and self.v_direction == 'Multi':
+            if self.prices[0] <= (self.v_esp + var1) and self.v_direction == 'Multi':
                 if self.count_stoploss < 0:
                     self.count_stoploss = 0
                 self.qualifier_stoploss = 'LONG'
-            elif self.v_latest_price >= (self.v_esp - var1) and self.v_direction == 'Empty':
+            elif self.prices[0] >= (self.v_esp - var1) and self.v_direction == 'Empty':
                 if self.count_stoploss > 0:
                     self.count_stoploss = 0
                 self.qualifier_stoploss = 'SHORT'
@@ -685,336 +685,357 @@ class MainFunction:
 
         # region LOGIC: SUDDEN
         sudden = 50
-        if diff_previous >= sudden:
-            if self.count_sudden < 0:
-                self.count_sudden = 0
-            self.count_sudden += 1
-        if diff_previous <= -sudden:
-            if self.count_sudden > 0:
-                self.count_sudden = 0
-            self.count_sudden -= 1
-        if self.count_sudden >= 2 and self.v_direction == 'Empty':
+        if self.diff[0] >= sudden and self.diff[1] >= sudden and self.v_direction == 'Empty':
             self.trigger_close = 'SHORT'
-            self.v_reason_close = f'SUDDEN_{sudden}'
+            self.v_reason_close = f'SUDDEN_inc{sudden}'
             self.f_main3()
-        if self.count_sudden <= -2 and self.v_direction == 'Multi':
+            self.count_sudden = 0
+            return
+        if self.diff[0] <= -sudden and self.diff[1] <= -sudden and self.v_direction == 'Multi':
             self.trigger_close = 'LONG'
-            self.v_reason_close = f'SUDDEN_{sudden}'
+            self.v_reason_close = f'SUDDEN_dec{sudden}'
             self.f_main3()
+            self.count_sudden = 0
+            return
         # endregion
 
-        # region LOGIC: O=L O=H together simultaneously with c>prc
-        if open1 == low1:
-            resetted = 'O=L'
-            self.opened_by = resetted
-            if self.resetted != resetted:
-                self.resetted = resetted
-            script2 = True
-            if self.v_direction != 'Multi' and \
-                    self.prclpr > 0 and (+ Variables.XPaths.tradingview_ohlc['C'][1] - self.prclpr) >= 5 and \
-                    not self.override:
-                self.resetted = ''
-                self.v_reason_close = resetted
-                self.trigger_close = 'SHORT'
-                self.f_main3()
-                self.trigger_open = 'LONG'
-                self.v_reason_open = resetted
-                self.f_main3()
-        elif open1 == high1:
-            resetted = 'O=H'
-            self.opened_by = resetted
-            if self.resetted != resetted:
-                self.resetted = resetted
-            script2 = True
-            if self.v_direction != 'Empty' and \
-                    self.prclpr > 0 and (- Variables.XPaths.tradingview_ohlc['C'][1] + self.prclpr) >= 5 and \
-                    not self.override:
-                self.resetted = ''
-                self.v_reason_close = resetted
-                self.trigger_close = 'LONG'
-                self.f_main3()
-                self.trigger_open = 'SHORT'
-                self.v_reason_open = resetted
-                self.f_main3()
-        else:
-            script2 = True
+        # region LOGIC 4 SCENARIOS
+
+        if self.count_consecutive >= 2 and self.diff_anchor[0] > 8 and self.v_direction != 'Multi' and \
+                (self.prices[0] > self.prclprs[0] > 0 and self.prices[0] > self.prclprs[1] > 0):
+            self.resetted = f'Scenario1 inc C {self.prices[0]} > PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}>=2 by:{self.diff_anchor[0]}>=8'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'SHORT'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'LONG'
+            self.f_main3()
+            self.resetted = ''
+            return
+        if self.count_consecutive <= -2 and self.diff_anchor[0] < -8 and self.v_direction != 'Empty' and \
+                (self.prices[0] < self.prclprs[0] > 0 and self.prices[0] < self.prclprs[1] > 0):
+            self.resetted = f'Scenario1 dec C {self.prices[0]} < PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}<=-2 by:{self.diff_anchor[0]}<=-8'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'LONG'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'SHORT'
+            self.f_main3()
+            self.resetted = ''
+            return
+
+        if self.count_consecutive > 1 and self.diff_anchor[1] >= 10 and \
+                (self.prices[0] > self.prclprs[0] > 0 and self.prices[0] > self.prclprs[1] > 0):
+            self.resetted = f'Scenario2 inc C {self.prices[0]} > PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}>1 prev_diff:{self.diff_anchor[1]}>=10'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'SHORT'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'LONG'
+            self.f_main3()
+            self.resetted = ''
+            return
+        if self.count_consecutive < -1 and self.diff_anchor[1] <= -10 and \
+                (self.prices[0] < self.prclprs[0] > 0 and self.prices[0] < self.prclprs[1] > 0):
+            self.resetted = f'Scenario2 dec C {self.prices[0]} < PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}<-1 prev_diff:{self.diff_anchor[1]}<=-10'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'LONG'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'SHORT'
+            self.f_main3()
+            self.resetted = ''
+            return
+
+        if self.count_consecutive >= 3 and self.diff_anchor[0] > 3.7 and self.v_direction != 'Multi' and \
+                (self.prices[0] > self.prclprs[0] > 0 and self.prices[0] > self.prclprs[1] > 0):
+            self.resetted = f'Scenario3 inc C {self.prices[0]} > PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}>=3 diff:{self.diff_anchor[0]}>=3.7'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'SHORT'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'LONG'
+            self.f_main3()
+            self.resetted = ''
+            return
+        if self.count_consecutive <= -3 and self.diff_anchor[0] < -3.7 and self.v_direction != 'Empty' and \
+                (self.prices[0] < self.prclprs[0] > 0 and self.prices[0] < self.prclprs[1] > 0):
+            self.resetted = f'Scenario3 dec C {self.prices[0]} < PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}<=-3 diff:{self.diff_anchor[0]}<=-3.7'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'LONG'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'SHORT'
+            self.f_main3()
+            self.resetted = ''
+            return
+
+        if self.count_consecutive >= 2 and \
+                (self.diff_anchor[0] > self.diff_anchor[1] >= 3.7) and \
+                (self.prices[0] > self.prclprs[0] > 0 and self.prices[0] > self.prclprs[1] > 0):
+            self.resetted = f'Scenario4 inc C {self.prices[0]} > PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}>=2 diff>prev_diff:{self.diff_anchor[0]}>=3.7'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'SHORT'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'LONG'
+            self.f_main3()
+            self.resetted = ''
+            return
+        if self.count_consecutive <= -2 and \
+                (self.diff_anchor[0] < self.diff_anchor[1] <= -3.7) and \
+                (self.prices[0] < self.prclprs[0] > 0 and self.prices[0] < self.prclprs[1] > 0):
+            self.resetted = f'Scenario4 dec C {self.prices[0]} < PRC1 {self.prclprs[0]} & PRC2 {self.prclprs[1]} ||| notes:{self.count_consecutive}<=-2 diff<prev_diff:{self.diff_anchor[0]}<=-3.7'
+            self.v_reason_close = self.resetted
+            self.trigger_close = 'LONG'
+            self.f_main3()
+            self.v_reason_open = self.resetted
+            self.trigger_open = 'SHORT'
+            self.f_main3()
+            self.resetted = ''
+            return
+
+        # if self.prices[0] == self.prclpr and self.v_direction not in ['NO_POS']:
+        #     self.resetted = f'C=PRCLPR {self.prices[0]}={self.prclpr}'
+        #     self.v_reason_close = self.resetted
+        #     if self.v_direction in ['Multi']:
+        #         self.trigger_close = 'LONG'
+        #     if self.v_direction in ['Empty']:
+        #         self.trigger_close = 'SHORT'
+        #     self.f_main3()
+        #     self.resetted = ''
+        #     return
+
         # endregion
 
-        # region LOGIC SUM_Net/Notes
-        # if self.count_consecutive >= 2 and \
-        #         self.diff >= 3.7 and \
-        #         self.v_direction != 'Multi':
-        #     resetted = f'SUM_NET/Notes inc'
-        #     self.opened_by = resetted
-        #     self.anchor_price_2 = self.v_latest_price
-        #     self.count_consecutive_sum = 0
+        # region LOGIC: O=L O=H DISABLED
+        # if self.resetted == 'O=L & C>PRC' and (+ self.count_consecutive - self.count_qualifier_OHCPRC) >= 1:
         #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
         #     self.f_main3()
-        #     self.v_reason_open = resetted
         #     self.trigger_open = 'LONG'
+        #     self.v_reason_open = self.resetted
         #     self.f_main3()
-        #     self.override = True
-        #     # self.count_consecutive = 0
-        # elif self.count_consecutive <= -2 and \
-        #         self.diff <= -3.7 and \
-        #         self.v_direction != 'Empty':
-        #     resetted = f'SUM_NET/Notes dec'
-        #     self.opened_by = resetted
-        #     self.anchor_price_2 = self.v_latest_price
-        #     self.count_consecutive_sum = 0
-        #     self.v_reason_close = resetted
+        # if self.resetted == 'O=H & C<PRC' and (- self.count_consecutive + self.count_qualifier_OHCPRC) >= 1:
         #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
         #     self.f_main3()
-        #     self.v_reason_open = resetted
         #     self.trigger_open = 'SHORT'
+        #     self.v_reason_open = self.resetted
         #     self.f_main3()
-        #     self.override = True
-        #     # self.count_consecutive = 0
+        #
+        # if open1 == low1 and \
+        #         self.v_direction != 'Multi' and \
+        #         self.prclpr > 0 and \
+        #         (+ Variables.XPaths.tradingview_ohlc['C'][1] - self.prclpr) > 0:
+        #     self.disable_sum = True
+        #     resetted = 'O=L & C>PRC'
+        #     self.resetted = resetted
+        #     self.count_qualifier_OHCPRC = self.count_consecutive
+        # elif open1 == high1 and \
+        #         self.v_direction != 'Empty' and \
+        #         self.prclpr > 0 and \
+        #         (- Variables.XPaths.tradingview_ohlc['C'][1] + self.prclpr) > 0:
+        #     self.disable_sum = True
+        #     resetted = 'O=H & C<PRC'
+        #     self.resetted = resetted
+        #     self.count_qualifier_OHCPRC = self.count_consecutive
         # else:
-        #     self.override = False
-        # endregion disabled
+        #     self.disable_sum = False
+        # endregion
 
-        # region LOGIC: PRCLPR disabled
-        # if (close1 >= self.prclpr and open1 >= self.prclpr) and self.prclpr != 0:
-        #     resetted = 'C & O >= PRCLPR'
+        # region LOGIC: (O<>L) (H<>O) DISABLED
+        # if self.resetted == 'O<>L' and (- self.count_consecutive + self.count_qualifier_OLHO) >= 1 and \
+        #         (self.opened_by == f'C>O>PRCLPR' or self.opened_by == f'C<O<PRCLPR'):
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        # if self.resetted == 'O<>H' and (+ self.count_consecutive - self.count_qualifier_OLHO) >= 1 and \
+        #         (self.opened_by == f'C>O>PRCLPR' or self.opened_by == f'C<O<PRCLPR'):
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #
+        # if self.v_direction != 'NO_POS' and (open1 > low1 or open1 < low1):
+        #     self.disable_sum = True
+        #     resetted = 'O<>L'
+        #     self.count_qualifier_OLHO = self.count_consecutive
         #     self.opened_by = resetted
-        #     if self.state_prclpr != resetted:
-        #         self.state_prclpr = resetted
-        #         self.v_reason_close = resetted
-        #         self.trigger_close = 'SHORT'
-        #         self.f_main3()
-        #         self.trigger_open = 'LONG'
-        #         self.v_reason_open = resetted
-        #         self.f_main3()
-        # elif (close1 <= self.prclpr and open1 <= self.prclpr) and self.prclpr != 0:
-        #     resetted = 'C & O <= PRCLPR'
+        #     self.resetted = resetted
+        #     self.anchor_price_2 = round(self.prices[0],2)
+        #     self.no_repeat_time = now
+        # elif self.v_direction != 'NO_POS' and (open1 < high1 or open1 > high1):
+        #     self.disable_sum = True
+        #     resetted = 'O<>H'
+        #     self.count_qualifier_OLHO = self.count_consecutive
         #     self.opened_by = resetted
-        #     if self.state_prclpr != resetted:
-        #         self.state_prclpr = resetted
-        #         self.v_reason_close = resetted
-        #         self.trigger_close = 'LONG'
-        #         self.f_main3()
-        #         self.trigger_open = 'SHORT'
-        #         self.v_reason_open = resetted
-        #         self.f_main3()
+        #     self.resetted = resetted
+        #     self.anchor_price_2 = round(self.prices[0],2)
+        #     self.no_repeat_time = now
         # else:
-        #     script2 = True
+        #     self.disable_sum = False
         # endregion
 
-        # region LOGIC: scr2 sell2
-        # if self.v_direction == 'Multi' and (low1 < open1 < close1) and not self.override:
-        #     resetted = 'L<O<C'
-        #     if self.resetted != resetted:
-        #         self.resetted = resetted
-        #         # self.count_consecutive = 0
-        #     if self.count_consecutive <= -3:
-        #         self.resetted = ''
-        #         self.trigger_close = 'LONG'
-        #         self.v_reason_close = resetted
-        #         self.f_main3()
-        # elif self.v_direction == 'Empty' and (close1 < open1 < high1) and not self.override:
-        #     resetted = 'C<O<H'
-        #     if self.resetted != resetted:
-        #         self.resetted = resetted
-        #         # self.count_consecutive = 0
-        #     if self.count_consecutive >= 3:
-        #         self.resetted = ''
-        #         self.trigger_close = 'SHORT'
-        #         self.v_reason_close = resetted
-        #         self.f_main3()
+        # region C<>PRCLPR DISABLED
+        # if self.v_direction in ['NO_POS', 'Empty'] and \
+        #         self.prices[0] > self.prclpr > 0:
+        #     self.resetted = f'C>PRCLPR'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'LONG'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        # if self.v_direction in ['NO_POS', 'Multi'] and \
+        #         self.prices[0] < self.prclpr < 0:
+        #     self.resetted = f'C<PRCLPR'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'SHORT'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        #
+        # if self.v_direction in ['Multi'] and \
+        #         self.diff_anchor[0] <= -15:
+        #     self.resetted = f'Notes <= -15'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        # if self.v_direction in ['Empty'] and \
+        #         self.diff_anchor[0] >= +15:
+        #     self.resetted = f'Notes >= +15'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #
         # endregion
 
-        # region LOGIC: (O-L)>=5 (H-O)>=5
-        if self.v_direction == 'Multi' and (open1 >= (low1 + 5)) and not self.override and now.minute >= self.no_repeat_time.minute+2 :
-            resetted = '(O-L)>=5'
-            self.opened_by = resetted
-            if self.resetted != resetted:
-                self.resetted = resetted
-            # if self.count_consecutive <= -3:
-            self.trigger_close = 'LONG'
-            self.v_reason_close = resetted
-            self.diff_5min = 0
-            self.anchor_price_2 = self.v_latest_price
-            self.count_consecutive_sum = 0
-            self.f_main3()
-            self.no_repeat_time = now
-        elif self.v_direction == 'Empty' and (open1 <= (high1 - 5)) and not self.override and now.minute >= self.no_repeat_time.minute+2:
-            resetted = '(H-O)>=5'
-            self.opened_by = resetted
-            if self.resetted != resetted:
-                self.resetted = resetted
-            # if self.count_consecutive >= 3:
-            self.trigger_close = 'SHORT'
-            self.v_reason_close = resetted
-            self.diff_5min = 0
-            self.anchor_price_2 = self.v_latest_price
-            self.count_consecutive_sum = 0
-            self.f_main3()
+        # region C<>O<>PRCLPR DISABLED
+        # if self.resetted == f'C>O>PRCLPR' and (+ self.count_consecutive - self.count_qualifier_COP) >= 1:
+        #     self.opened_by = self.resetted
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'LONG'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        # if self.resetted == f'C<O<PRCLPR' and (- self.count_consecutive + self.count_qualifier_COP) >= 1:
+        #     self.opened_by = self.resetted
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'SHORT'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        #
+        # if 0 < self.prclpr < Variables.XPaths.tradingview_ohlc['O'][1] < Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
+        #     self.disable_sum = True
+        #     resetted = f'C>O>PRCLPR'
+        #     self.resetted = resetted
+        #     self.count_qualifier_COP = self.count_consecutive
+        #     self.no_repeat_time = now
+        # elif 0 < self.prclpr and self.prclpr > Variables.XPaths.tradingview_ohlc['O'][1] > Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
+        #     self.disable_sum = True
+        #     resetted = f'C<O<PRCLPR'
+        #     self.resetted = resetted
+        #     self.count_qualifier_COP = self.count_consecutive
+        #     self.no_repeat_time = now
+        # else:
+        #     self.disable_sum = False
         # endregion
 
-        # region C<>PRCLPR
-        if self.prclpr > 0 and (+ Variables.XPaths.tradingview_ohlc['C'][1] - self.prclpr) >= 5 and self.v_direction != 'Multi':
-            resetted = f'C>PRCLPR'
-            self.no_repeat_time = now
-            self.trigger_close = 'SHORT'
-            self.v_reason_close = resetted
-            self.f_main3()
-            self.trigger_open = 'LONG'
-            self.v_reason_open = resetted
-            self.f_main3()
-        if self.prclpr > 0 and (- Variables.XPaths.tradingview_ohlc['C'][1] + self.prclpr) >= 5 and self.v_direction != 'Empty':
-            resetted = f'C<PRCLPR'
-            self.no_repeat_time = now
-            self.trigger_close = 'LONG'
-            self.v_reason_close = resetted
-            self.f_main3()
-            self.trigger_open = 'SHORT'
-            self.v_reason_open = resetted
-            self.f_main3()
+        # region column O & P DISABLED
+        # print(f'{self.script_timeframe[306][1]}')
+        #
+        # if self.v_direction in ['Empty'] and \
+        #         (self.sum_net2[0] >= 16):
+        #     self.resetted = 'sum_net2 > +15.99'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        # if self.v_direction in ['Multi'] and \
+        #         (self.sum_net2[0] <= -16):
+        #     self.resetted = 'sum_net2 < -15.99'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        #
+        # if self.v_direction in ['Empty'] and \
+        #         (self.sum_net[0] > self.sum_net[1] >= +3) and \
+        #         (self.prices[0] > self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sum_net go GREEN'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        # if self.v_direction in ['Multi'] and \
+        #         (self.sum_net[0] < self.sum_net[1] <= -3) and \
+        #         (self.prices[0] < self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sum_net go RED'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        #
+        # if self.v_direction in ['Empty'] and \
+        #         (self.script_timeframe[306][1][0] >= +3 > self.script_timeframe[306][1][1]) and \
+        #         (self.prices[0] > self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sc_5m_6 go GREEN'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        # if self.v_direction in ['Multi'] and \
+        #         (self.script_timeframe[306][1][0] <= -3 < self.script_timeframe[306][1][1]) and \
+        #         (self.prices[0] < self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sc_5m_6 go RED'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        #
+        # if self.v_direction in ['NO_POS','Multi'] and \
+        #         self.script_timeframe[306][1][0] < self.script_timeframe[306][1][1] <= -3 and \
+        #         self.sum_net[0] <= -3 and \
+        #         (self.prices[0] < self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sc_5m_6 and sum_net match <-3'
+        #     self.trigger_close = 'LONG'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'SHORT'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
+        # if self.v_direction in ['NO_POS','Empty'] and \
+        #         self.script_timeframe[306][1][0] > self.script_timeframe[306][1][1] >= +3 and \
+        #         self.sum_net[0] >= +3 and \
+        #         (self.prices[0] > self.prclpr or self.prclpr == 0):
+        #     self.resetted = 'sc_5m_6 and sum_net match >+3'
+        #     self.trigger_close = 'SHORT'
+        #     self.v_reason_close = self.resetted
+        #     self.f_main3()
+        #     self.trigger_open = 'LONG'
+        #     self.v_reason_open = self.resetted
+        #     self.f_main3()
+        #     self.resetted = ''
         # endregion
-
-        # region C<>O<>PRCLPR
-        if 0 < self.prclpr < Variables.XPaths.tradingview_ohlc['O'][1] < Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
-            resetted = f'C>O>PRCLPR'
-            self.no_repeat_time = now
-            self.trigger_close = 'SHORT'
-            self.v_reason_close = resetted
-            self.f_main3()
-            self.trigger_open = 'LONG'
-            self.v_reason_open = resetted
-            self.f_main3()
-        if 0 < self.prclpr and self.prclpr > Variables.XPaths.tradingview_ohlc['O'][1] > Variables.XPaths.tradingview_ohlc['C'][1] and self.v_direction != 'Multi':
-            resetted = f'C<O<PRCLPR'
-            self.no_repeat_time = now
-            self.trigger_close = 'LONG'
-            self.v_reason_close = resetted
-            self.f_main3()
-            self.trigger_open = 'SHORT'
-            self.v_reason_open = resetted
-            self.f_main3()
-        # endregion
-
-        if script2:
-            self.note3 = 'SCR#2'
-        # region script1
-        if not script2:
-            self.note3 = 'SCR#1'
-            # region LOGIC: Sudden 50
-            if diff_previous >= 50 and self.v_direction == 'Empty':
-                self.trigger_close = 'SHORT'
-                self.v_reason_close = 'SUDDEN_50'
-                self.f_main3()
-            if diff_previous <= -50 and self.v_direction == 'Multi':
-                self.trigger_close = 'LONG'
-                self.v_reason_close = 'SUDDEN_50'
-                self.f_main3()
-            # endregion
-
-            # region LOGIC: 4GR 4RE sc4 sc6
-
-            # if (float(Variables.Misc.tradingview_charts_data2[6][0]) > 0 or Variables.Misc.tradingview_charts_data2[6][0] == '+0.00') and \
-            #         (float(Variables.Misc.tradingview_charts_data2[8][0]) > 0 or Variables.Misc.tradingview_charts_data2[8][0] == '+0.00') and \
-            #         self.script_timeframe[304][1][0] > 0 and \
-            #         self.script_timeframe[306][1][0] > 0:
-            #     self.anchor_price_2 = self.v_latest_price
-            #     self.count_consecutive_sum = 0
-            #     self.v_reason_open = '4 GR'
-            #     self.v_reason_close = self.v_reason_open
-            #     if self.diff_5min >= 5:
-            #         self.trigger_open = 'LONG'
-            #         self.trigger_close = 'SHORT'
-            # elif (float(Variables.Misc.tradingview_charts_data2[6][0]) < 0 or Variables.Misc.tradingview_charts_data2[6][0] == '−0.00') and \
-            #         (float(Variables.Misc.tradingview_charts_data2[8][0]) < 0 or Variables.Misc.tradingview_charts_data2[8][0] == '−0.00') and \
-            #         self.script_timeframe[304][1][0] < 0 and \
-            #         self.script_timeframe[306][1][0] < 0:
-            #     self.anchor_price_2 = self.v_latest_price
-            #     self.count_consecutive_sum = 0
-            #     self.v_reason_open = '4 RE'
-            #     self.v_reason_close = self.v_reason_open
-            #     if self.diff_5min <= -5:
-            #         self.trigger_open = 'SHORT'
-            #         self.trigger_close = 'LONG'
-            # elif Variables.Misc.count_consec_2 >= consec1 and \
-            #         Variables.Misc.count_consec_3 >= consec2 and \
-            #         self.count_tfsc_long2 >= 8:
-            #     self.anchor_price_2 = self.v_latest_price
-            #     self.count_consecutive_sum = 0
-            #     self.v_reason_open = f'sc4 sc6 inc={consec1} {consec2}'
-            #     self.v_reason_close = self.v_reason_open
-            #     if self.diff_5min >= 5:
-            #         self.trigger_open = 'LONG'
-            #         self.trigger_close = 'SHORT'
-            # elif Variables.Misc.count_consec_2 <= -consec1 and \
-            #         Variables.Misc.count_consec_3 <= -consec2 and \
-            #         self.count_tfsc_short2 >= 8:
-            #     self.anchor_price_2 = self.v_latest_price
-            #     self.count_consecutive_sum = 0
-            #     self.v_reason_open = self.v_reason_close = f'sc4 sc6 dec={consec1} {consec2}'
-            #     self.v_reason_close = self.v_reason_open
-            #     if self.diff_5min <= -5:
-            #         self.trigger_open = 'SHORT'
-            #         self.trigger_close = 'LONG'
-            # endregion
-
-            # region LOGIC: col K opposite
-            if not self.v_direction == 'NO_POS':
-                if self.script_timeframe[304][1][0] > 0 and Variables.Misc.count_consec_2 >= 3:
-                    self.anchor_price_2 = self.v_latest_price
-                    self.count_consecutive_sum = 0
-                    Variables.Misc.count_consec_2 = 0
-                    self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
-                    self.v_reason_close = self.v_reason_open
-                    if self.diff_5min >= 5:
-                        self.trigger_open = 'LONG'
-                        self.trigger_close = 'SHORT'
-                        self.f_main3()
-                if self.script_timeframe[304][1][0] < 0 and Variables.Misc.count_consec_2 <= -3:
-                    self.anchor_price_2 = self.v_latest_price
-                    self.count_consecutive_sum = 0
-                    Variables.Misc.count_consec_2 = 0
-                    self.v_reason_open = self.v_reason_close = f'column K opposite and consec 3'
-                    self.v_reason_close = self.v_reason_open
-                    if self.diff_5min <= -5:
-                        self.trigger_open = 'SHORT'
-                        self.trigger_close = 'LONG'
-                        self.f_main3()
-            # endregion
-        # endregion
-
-        self.f_main3()
 
     def f_main3(self):
-        self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
-        self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
         if self.v_direction == 'NO_POS':
             if not self.trigger_open == '':
                 self.f_open_position(self.trigger_open)
-                self.trigger_open = ''
-                # self.count_consecutive = 0
+                return
         elif self.v_direction == 'Empty':
             if self.trigger_close == 'SHORT':
-                self.trigger_close = ''
-                # self.count_consecutive = 0
                 self.f_close_position()
-                self.take_profit = 0
-                self.stop_loss = 0
-                Variables.Misc.count_consec_1 = 0
-                Variables.Misc.count_consec_2 = 0
-                Variables.Misc.count_consec_3 = 0
+                return
         elif self.v_direction == 'Multi':
             if self.trigger_close == 'LONG':
-                self.trigger_close = ''
-                # self.count_consecutive = 0
                 self.f_close_position()
-                self.take_profit = 0
-                self.stop_loss = 0
-                Variables.Misc.count_consec_1 = 0
-                Variables.Misc.count_consec_2 = 0
-                Variables.Misc.count_consec_3 = 0
-        self.v_reason_close = ''
-        self.trigger_close = ''
-        self.trigger_open = ''
-        self.v_reason_open = ''
+                return
 
     def f_last_reset_time(self, now, key, offset=0):
         if key >= 60:
@@ -1030,7 +1051,8 @@ class MainFunction:
                 #     offset2 = -1
                 #     condition = (now - self.script_timeframe[key][0]).seconds >= 30 and (now.minute - offset2) % int(key / 60) == 0
             else:
-                condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset) % int(key/60) == 0
+                condition = (now - self.script_timeframe[key][0]).seconds >= 60 and (now.minute - offset) % int(
+                    key / 60) == 0
             if key == 306:
                 condition = condition and now.second >= 7
         else:
@@ -1041,8 +1063,10 @@ class MainFunction:
             self.script_timeframe[key][2] = f"{'{:.2f}'.format(self.cumulative_value)}"
             return True
         else:
-            if self.v_previous_price != float(0):
-                self.script_timeframe[key][1][0] += self.v_latest_price - self.v_previous_price
+            if self.prices[1] != float(0):
+                self.script_timeframe[key][1].insert(0, self.script_timeframe[key][1][0] + round(self.prices[0],2) - round(self.prices[1],2))
+                if len(self.script_timeframe[key][1]) > 5:
+                    self.script_timeframe[key][1].pop()
                 if self.script_timeframe[key][1][0] > 0:
                     self.script_timeframe[key][2] = f"+{'{:.2f}'.format(self.script_timeframe[key][1][0])}"
                 else:
@@ -1058,53 +1082,54 @@ class MainFunction:
             ['time', self.f_current_time(out='time') if not note2 else ''],
             ['evat_dir', self.v_direction_evat if not note2 else ''],
             ['direction', self.v_direction if not note2 else ''],
-            ['C_price', '{:.2f}'.format(self.v_latest_price) if not note2 else ''],
-            ['elw_price', '{:.2f}'.format(self.v_latest_price_evat) if not note2 else ''],
-            ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
-            ['vol', Variables.Misc.tv_vol if not note2 else ''],
-            ['evat_balance', '{:.2f}'.format(self.v_bal_elw) if not note2 else ''],
-            ['sim_balance', '{:.2f}'.format(self.v_bal) if not note2 else ''],
-            # ['tv_5s', f'\'{Variables.Misc.tradingview_charts_data[1]}' if not note2 else ''],
-            # ['tv_10s', f'\'{Variables.Misc.tradingview_charts_data[2]}' if not note2 else ''],
-            # ['tv_15s', f'\'{Variables.Misc.tradingview_charts_data[3]}' if not note2 else ''],
-            # ['tv_30s', f'\'{Variables.Misc.tradingview_charts_data[4]}' if not note2 else ''],
-            # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}' if not note2 else ''],
-            # ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}' if not note2 else ''],
-            # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}' if not note2 else ''[],
+            ['C_price', '{:.2f}'.format(self.prices[0]) if not note2 else ''],
+            ['elw_price', '{:.2f}'.format(round(self.v_evat_latest_price, 2)) if not note2 else ''],
+        ['esp', '{:.2f}'.format(self.v_esp) if not note2 else ''],
+        ['vol', Variables.Misc.tv_vol if not note2 else ''],
+        ['evat_balance', '{:.2f}'.format(self.v_bal_elw) if not note2 else ''],
+        ['sim_balance', '{:.2f}'.format(self.v_bal) if not note2 else ''],
+        # ['tv_5s', f'\'{Variables.Misc.tradingview_charts_data[1]}' if not note2 else ''],
+        # ['tv_10s', f'\'{Variables.Misc.tradingview_charts_data[2]}' if not note2 else ''],
+        # ['tv_15s', f'\'{Variables.Misc.tradingview_charts_data[3]}' if not note2 else ''],
+        # ['tv_30s', f'\'{Variables.Misc.tradingview_charts_data[4]}' if not note2 else ''],
+        # ['tv_1m', f'\'{Variables.Misc.tradingview_charts_data[5]}' if not note2 else ''],
+        # ['tv_2m', f'\'{Variables.Misc.tradingview_charts_data[6]}' if not note2 else ''],
+        # ['tv_3m', f'\'{Variables.Misc.tradingview_charts_data[7]}' if not note2 else ''[],
 
-            # ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
-            ['sc_5m_3', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
-            ['sc_5m_6', f'\'{self.script_timeframe[306][2]}' if not note2 else ''],
-            # ['script', f"\'{self.note3}" if not note2 else ''],
-            ['sum_net', f"\'{'{:.2f}'.format(self.diff_5min)}" if not note2 else ''],
-            ['note', note if not note2 else ''],
-            ['PRCLPR', f"\'{'{:.2f}'.format(self.prclpr)}" if not note2 else ''],
-            ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
-            ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
-            ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
-            ['C', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['C'][1])}" if not note2 else ''],
-            ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
-            ['sc_10s', f'\'{self.script_timeframe[10][2]}' if not note2 else ''],
-            ['sc_15s', f'\'{self.script_timeframe[15][2]}' if not note2 else ''],
-            ['sc_30s', f'\'{self.script_timeframe[30][2]}' if not note2 else ''],
-            ['sc_1m', f'\'{self.script_timeframe[60][2]}' if not note2 else ''],
-            ['sc_2m', f'\'{self.script_timeframe[120][2]}' if not note2 else ''],
-            ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
-            ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
-            ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
-            # ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}' if not note2 else ''],
-            # ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}' if not note2 else ''],
-            # ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}' if not note2 else ''],
-            # ['HA4', f'\'{Variables.Misc.tv_HA[4][1]}' if not note2 else ''],
-            # ['HA5', f'\'{Variables.Misc.tv_HA[5][1]}' if not note2 else ''],
-            # ['sc_5m_2', f'\'{self.script_timeframe[300][5]}' if not note2 else ''],
-            # ['last_rev', self.cumulative_value_str2 if not note2 else ''],
-            # ['to_SL/to_TP', self.v_tp_sl_str if not note2 else ''],
-            # ['aop', '{:.2f}'.format(self.v_aop) if not note2 else ''],
-            # ['aop-esp', '{:.2f}'.format(self.v_diff) if not note2 else ''],
-            # ['alert1', f"{self.alerts_dict['ALERT1'][0]}" if not note2 else ''],
-            # ['recent', f"{self.alerts_dict['ALERT1'][1]}" if not note2 else ''],
-            # ['previous', f"{self.alerts_dict['ALERT1'][2]}" if not note2 else ''],
+        # ['tv_5m', f'\'{Variables.Misc.tradingview_charts_data[8]}' if not note2 else ''],
+        ['sc_5m_3', f'\'{self.script_timeframe[304][2]}' if not note2 else ''],
+        ['sc_5m_6', f'\'{self.script_timeframe[306][2]}' if not note2 else ''],
+        # ['script', f"\'{self.note3}" if not note2 else ''],
+        ['sum_net', f"{'{:.2f}'.format(self.sum_net[0])}" if not note2 else ''],
+        ['sum_net2', f"{'{:.2f}'.format(self.sum_net2[0])}" if not note2 else ''],
+        ['note', note if not note2 else ''],
+        ['PRCLPR', f"\'{'{:.2f}'.format(self.prclpr)}" if not note2 else ''],
+        ['O', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['O'][1])}" if not note2 else ''],
+        ['H', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['H'][1])}" if not note2 else ''],
+        ['L', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['L'][1])}" if not note2 else ''],
+        ['C', f"\'{'{:.2f}'.format(Variables.XPaths.tradingview_ohlc['C'][1])}" if not note2 else ''],
+        ['sc_5s', f'\'{self.script_timeframe[5][2]}' if not note2 else ''],
+        ['sc_10s', f'\'{self.script_timeframe[10][2]}' if not note2 else ''],
+        ['sc_15s', f'\'{self.script_timeframe[15][2]}' if not note2 else ''],
+        ['sc_30s', f'\'{self.script_timeframe[30][2]}' if not note2 else ''],
+        ['sc_1m', f'\'{self.script_timeframe[60][2]}' if not note2 else ''],
+        ['sc_2m', f'\'{self.script_timeframe[120][2]}' if not note2 else ''],
+        ['sc_3m', f'\'{self.script_timeframe[180][2]}' if not note2 else ''],
+        ['sc_4m', f'\'{self.script_timeframe[240][2]}' if not note2 else ''],
+        ['sc_5m', f'\'{self.script_timeframe[300][2]}' if not note2 else ''],
+        # ['HA1', f'\'{Variables.Misc.tv_HA[1][1]}' if not note2 else ''],
+        # ['HA2', f'\'{Variables.Misc.tv_HA[2][1]}' if not note2 else ''],
+        # ['HA3', f'\'{Variables.Misc.tv_HA[3][1]}' if not note2 else ''],
+        # ['HA4', f'\'{Variables.Misc.tv_HA[4][1]}' if not note2 else ''],
+        # ['HA5', f'\'{Variables.Misc.tv_HA[5][1]}' if not note2 else ''],
+        # ['sc_5m_2', f'\'{self.script_timeframe[300][5]}' if not note2 else ''],
+        # ['last_rev', self.cumulative_value_str2 if not note2 else ''],
+        # ['to_SL/to_TP', self.v_tp_sl_str if not note2 else ''],
+        # ['aop', '{:.2f}'.format(self.v_aop) if not note2 else ''],
+        # ['aop-esp', '{:.2f}'.format(self.v_diff) if not note2 else ''],
+        # ['alert1', f"{self.alerts_dict['ALERT1'][0]}" if not note2 else ''],
+        # ['recent', f"{self.alerts_dict['ALERT1'][1]}" if not note2 else ''],
+        # ['previous', f"{self.alerts_dict['ALERT1'][2]}" if not note2 else ''],
         ]
         if header_only:
             return [[f"{','.join([sublist[0] for sublist in list_output])}"]]
@@ -1120,7 +1145,6 @@ class MainFunction:
         self.output = csv_string + self.output
         for key, value in self.alerts_dict.items():
             value[2] = value[1]
-        print(note)
         return
 
     def f_backup_github(self, file):
@@ -1223,7 +1247,8 @@ class MainFunction:
             time.sleep(1)
 
         try:
-            self.v_bal_elw = extract_float_numbers(self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_balance).text)
+            self.v_bal_elw = extract_float_numbers(
+                self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_balance).text)
         except:
             self.v_bal_elw = float(0)
 
@@ -1233,28 +1258,31 @@ class MainFunction:
             self.v_direction_evat = 'NO_POS'
 
         try:
-            self.v_esp = extract_float_numbers(self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_esp).text)
+            self.v_esp = extract_float_numbers(
+                self.driver.find_element(By.CSS_SELECTOR, Variables.CssSelectors.evatcoin_esp).text)
         except:
             self.v_esp = float(0)
 
-        while len(self.prices_list) >= 200:
-            self.prices_list.pop(0)
+        while len(self.checker_prices) >= 200:
+            self.checker_prices.pop()
 
-        self.prices_list.append(float(self.v_latest_price))
+        self.checker_prices.insert(0, float(self.prices[0]))
 
-        if all(val == self.prices_list[0] for val in self.prices_list) and len(self.prices_list) > 150:
+        if all(val == self.checker_prices[0] for val in self.checker_prices) and len(self.checker_prices) > 150:
             self.driver.get(Variables.Misc.url_evatcoin)
-            self.prices_list.pop(0)
-            self.prices_list.pop(0)
-            self.prices_list.append(float(123))
-            self.prices_list.append(float(self.v_latest_price))
+            self.checker_prices.pop()
+            self.checker_prices.pop()
+            self.checker_prices.insert(0, float(123))
+            self.checker_prices.insert(0, float(self.prices[0]))
 
         if self.v_direction == 'Multi':
-            self.v_tp_sl_str = f"{'{:.2f}'.format(float(self.v_latest_price) - ((float(self.v_aop)) - ((float(self.v_aop) * float(self.percent_stop_loss)) / (100 * Variables.Misc.leverage))))}/{'{:.2f}'.format(-float(self.v_latest_price) + ((float(self.v_aop)) + ((float(self.v_aop) * float(self.percent_take_profit)) / (100 * Variables.Misc.leverage))))}"
-            self.v_yield = Variables.Misc.leverage * 100 * ((float(self.v_latest_price) - float(self.v_aop)) / float(self.v_aop))
+            self.v_tp_sl_str = f"{'{:.2f}'.format(float(self.prices[0]) - ((float(self.v_aop)) - ((float(self.v_aop) * float(self.percent_stop_loss)) / (100 * Variables.Misc.leverage[0]))))}/{'{:.2f}'.format(-float(self.prices[0]) + ((float(self.v_aop)) + ((float(self.v_aop) * float(self.percent_take_profit)) / (100 * Variables.Misc.leverage[0]))))}"
+            self.v_yield = Variables.Misc.leverage[0] * 100 * (
+                        (float(self.prices[0]) - float(self.v_aop)) / float(self.v_aop))
         elif self.v_direction == 'Empty':
-            self.v_tp_sl_str = f"{'{:.2f}'.format(-float(self.v_latest_price) + ((float(self.v_aop)) + ((float(self.v_aop) * float(self.percent_stop_loss)) / (100 * Variables.Misc.leverage))))}/{'{:.2f}'.format(float(self.v_latest_price) - ((float(self.v_aop)) - ((float(self.v_aop) * float(self.percent_take_profit)) / (100 * Variables.Misc.leverage))))}"
-            self.v_yield = Variables.Misc.leverage * 100 * ((-float(self.v_latest_price) + float(self.v_aop)) / float(self.v_aop))
+            self.v_tp_sl_str = f"{'{:.2f}'.format(-float(self.prices[0]) + ((float(self.v_aop)) + ((float(self.v_aop) * float(self.percent_stop_loss)) / (100 * Variables.Misc.leverage[0]))))}/{'{:.2f}'.format(float(self.prices[0]) - ((float(self.v_aop)) - ((float(self.v_aop) * float(self.percent_take_profit)) / (100 * Variables.Misc.leverage[0]))))}"
+            self.v_yield = Variables.Misc.leverage[0] * 100 * (
+                        (-float(self.prices[0]) + float(self.v_aop)) / float(self.v_aop))
         else:
             self.v_yield = float(0)
             self.v_tp_sl_str = '-/-'
@@ -1264,9 +1292,10 @@ class MainFunction:
 
         test = True
         while test:
-            print(self.v_latest_price_evat)
+            print(round(self.v_evat_latest_price, 2))
             try:
-                self.v_latest_price_evat = extract_float_numbers(self.driver.find_element(By.XPATH, Variables.XPaths.evatcoin_current_price).text)
+                self.v_evat_latest_price = extract_float_numbers(
+                    self.driver.find_element(By.XPATH, Variables.XPaths.evatcoin_current_price).text)
                 test = False
             except:
                 self.driver.get(Variables.Misc.url_evatcoin)
@@ -1289,48 +1318,57 @@ class MainFunction:
                 pass_1 = False
                 while not pass_1:
                     try:
-                        pane_legend_item_value_title = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value-title')
+                        pane_legend_item_value_title = legend.find_elements(By.CLASS_NAME,
+                                                                            'pane-legend-item-value-title')
                         pane_legend_item_value = legend.find_elements(By.CLASS_NAME, 'pane-legend-item-value')
                         # pane_legend_item_value[0].click()
                         index = 0
-                        for title in pane_legend_item_value_title:
-                            print(title)
+                        for _ in pane_legend_item_value_title:
                             if index == 0:
-                                Variables.XPaths.tradingview_ohlc['O'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                                Variables.XPaths.tradingview_ohlc['O'][1] = float(
+                                    pane_legend_item_value[index].text.replace("'", "."))
                             if index == 1:
-                                Variables.XPaths.tradingview_ohlc['H'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                                Variables.XPaths.tradingview_ohlc['H'][1] = float(
+                                    pane_legend_item_value[index].text.replace("'", "."))
                             if index == 2:
-                                Variables.XPaths.tradingview_ohlc['L'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
+                                Variables.XPaths.tradingview_ohlc['L'][1] = float(
+                                    pane_legend_item_value[index].text.replace("'", "."))
                             if index == 3:
-                                Variables.XPaths.tradingview_ohlc['C'][1] = float(pane_legend_item_value[index].text.replace("'", "."))
-                                self.v_latest_price = Variables.XPaths.tradingview_ohlc['C'][1]
+                                Variables.XPaths.tradingview_ohlc['C'][1] = float(
+                                    pane_legend_item_value[index].text.replace("'", "."))
                             # line_text += title.text + ': ' + pane_legend_item_value[index].text + ' '
                             index += 1
                             pass_1 = True
                     except Exception as e:
                         print(e)
-                        time.sleep(1)
-                self.v_latest_price = float(
-                    self.driver.find_element(By.CSS_SELECTOR, 'body > div.js-rootresizer__contents > div.layout__area--center > div > div.chart-widget > table > tbody > tr:nth-child(1) > td.chart-markup-table.pane > div > div.pane-legend > div > div > span:nth-child(4) > span.pane-legend-item-value.pane-legend-line.pane-legend-item-value__main').text)
+                        self.driver.get(Variables.Misc.url_evatcoin)
+                        time.sleep(5)
+                        self.driver.find_element(By.XPATH,
+                                                 '/html/body/div/main/div/div[1]/div[1]/div[1]/div[1]/div[2]').click()
+                        WebDriverWait(self.driver, 20).until(
+                            EC.frame_to_be_available_and_switch_to_it((By.TAG_NAME, 'iframe')))
+                        # inner_iframe = self.driver.find_element(By.TAG_NAME, 'iframe')
+                        # self.driver.switch_to.frame(inner_iframe)
+                        legend = self.driver.find_element(By.CLASS_NAME, 'pane-legend')
+                        pass_1 = False
 
-                try:
-                    self.v_latest_price = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
-                except:
-                    self.v_latest_price = self.v_latest_price
+                # error = True
+                # latest_price = 0
+                # while error:
+                #     try:
+                #         latest_price = round(float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text),2)
+                #         error = False
+                #         if latest_price == 0:
+                #             error = True
+                #     except:
+                #         error = True
 
-                while self.v_latest_price == 0:
-                    try:
-                        self.v_latest_price = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['C'][0]).text)
-                    except:
-                        self.v_latest_price = self.v_latest_price
+                self.prices.insert(0, round(Variables.XPaths.tradingview_ohlc['C'][1],2))
+                while len(self.prices) > 10:
+                    self.prices.pop()
 
                 if self.anchor_price_2 == 0:
-                    self.anchor_price_2 = self.v_latest_price
-                    self.count_consecutive_sum = 0
-
-                self.prices.append(self.v_latest_price)
-                if len(self.prices) > 5:
-                    self.prices.pop()
+                    self.anchor_price_2 = self.prices[0]
 
                 # try:
                 #     raw_data = self.wait.until(ec.presence_of_element_located((By.XPATH, Variables.XPaths.tradingview_logs[1]))).text
@@ -1349,15 +1387,17 @@ class MainFunction:
                 # for key in Variables.Misc.tv_HA:
                 #     Variables.Misc.tv_HA[key][1] = self.driver.find_element(By.XPATH, Variables.Misc.tv_HA[key][0]).text
 
-                Variables.XPaths.tradingview_ohlc['O'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['O'][0]).text)
-                Variables.XPaths.tradingview_ohlc['H'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['H'][0]).text)
-                Variables.XPaths.tradingview_ohlc['L'][1] = float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['L'][0]).text)
-                prev_close = Variables.XPaths.tradingview_ohlc['C'][1]
-                Variables.XPaths.tradingview_ohlc['C'][1] = self.v_latest_price
-                if prev_close != Variables.XPaths.tradingview_ohlc['C'][1]:
-                    Variables.XPaths.tradingview_ohlc_prev['C'][1] = prev_close
-                print(Variables.XPaths.tradingview_ohlc['O'][1])
-                print(Variables.XPaths.tradingview_ohlc['H'][1])
+                # error = True
+                # while error:
+                #     try:
+                #         Variables.XPaths.tradingview_ohlc['O'][1] = round(float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['O'][0]).text),2)
+                #         Variables.XPaths.tradingview_ohlc['H'][1] = round(float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['H'][0]).text),2)
+                #         Variables.XPaths.tradingview_ohlc['L'][1] = round(float(self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_ohlc['L'][0]).text),2)
+                #         Variables.XPaths.tradingview_ohlc['C'][1] = self.prices[0]
+                #         error = False
+                #     except:
+                #         error = True
+
                 # for i in range(1, 9):
                 #     Variables.Misc.tradingview_charts_data[i] = self.driver.find_element(By.XPATH, Variables.XPaths.tradingview_charts[i]).text
                 #     text = Variables.Misc.tradingview_charts_data[i]
@@ -1444,7 +1484,8 @@ class MainFunction:
             return self.driver
         except Exception as e:
             print(e)
-            messagebox.showinfo("ALERT", 'Make sure you have an internet connection before starting the script.\nExiting...')
+            messagebox.showinfo("ALERT",
+                                'Make sure you have an internet connection before starting the script.\nExiting...')
             self.driver.quit()
             self.root.destroy()
             sys.exit()
@@ -1467,32 +1508,50 @@ class MainFunction:
         return ','.join(items)
 
     def f_open_position(self, direction, full=True):
-        if direction.upper() == 'LONG':
-            self.v_direction = 'Multi'
+        if self.v_bal >= self.leaf_size:
+            if direction.upper() == 'LONG':
+                self.v_direction = 'Multi'
+            else:
+                self.v_direction = 'Empty'
+            if full:
+                self.v_aop = float(self.prices[0])
+                self.v_bal = self.v_bal - Variables.Misc.leverage[1] * self.v_bal_leaf
+                self.v_bal_open = self.v_bal
+                self.str_profit_loss = "{:.2f}".format(- Variables.Misc.leverage[1] * self.v_bal_leaf)
+                self.v_reason_open = self.v_reason_open + f' p/l: {self.str_profit_loss}'
+
+                print(f'{self.v_bal} - {direction}')
+                self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
+                self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
+                self.note2 = ''
         else:
-            self.v_direction = 'Empty'
-        if full:
-            self.v_aop = float(self.v_latest_price)
-            self.v_bal = self.v_bal - 0.005 * self.v_bal
-            self.v_bal_open = self.v_bal
-            print(f'{self.v_bal} - {direction}')
-            # self.f_update_textbox(f"{direction.upper()} opened: {self.v_reason_open}", True, True)
-            self.note2 = f"O {direction.upper()}: {self.v_reason_open}"
+            self.note2 = f"O {direction.upper()}: {self.v_reason_open} -- FAILED! NOT ENOUGH BALANCE"
             self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
             self.note2 = ''
+
         self.f_get_data_evatcoin()
         if self.v_direction_evat == 'NO_POS':
             self.f_open_evat()
             print('open evat')
+
+        self.sum_net2.insert(0, float(0))
+        self.v_reason_open = ''
+        self.trigger_open = ''
+        self.v_reason_close = ''
+        self.trigger_close = ''
+        self.count_consecutive = 0
+        self.diff.insert(0, round(float(0), 2))
+
         return
 
     def f_close_position(self, full=True):
-        self.v_direction = 'NO_POS'
         if full:
             self.v_aop = 0
-            self.v_bal = self.v_bal - 0.005 * self.v_bal
+            self.v_bal = self.v_bal - Variables.Misc.leverage[1] * self.v_bal_leaf
+            self.str_profit_loss = "{:.2f}".format(
+                self.v_bal - self.v_bal_open - Variables.Misc.leverage[1] * self.v_bal_leaf)
             self.v_bal_open = self.v_bal
-            # self.f_update_textbox(f"Closed: {self.v_reason_close}", True, True)
+            self.v_reason_close = self.v_reason_close + f' p/l: {self.str_profit_loss}'
             self.note2 = f"C: {self.v_reason_close}"
             self.f_update_textbox(blank_after=True, blank_before=True, note2=True)
             self.note2 = ''
@@ -1500,7 +1559,16 @@ class MainFunction:
             self.f_close_evat()
             time.sleep(7)
             print('close evat')
+        self.v_direction = 'NO_POS'
+        self.sum_net2.insert(0, float(0))
+        self.v_reason_open = ''
+        self.trigger_open = ''
+        self.v_reason_close = ''
+        self.trigger_close = ''
+        self.count_consecutive = 0
+        self.diff.insert(0, round(float(0), 2))
         return
+
 
 def extract_float_numbers(string):
     pattern = r'[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?'
@@ -1517,7 +1585,8 @@ class LocalSheets:
         self.file = 'data.txt'
         self.SERVICE_ACCOUNT_FILE = 'keys.json'
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-        self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE, scopes=self.SCOPES)
+        self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE,
+                                                                           scopes=self.SCOPES)
         self.SPREADSHEET_ID = '14H-OyOk_rdHtuTCj6lRj5C1__BJksgskzBg9G5NOCpo'
         # self.SPREADSHEET_ID = '1liNHmgvzUeCjYVIPTywnQEeavIgaB2e0BeJFmrqR5l8'
         self.service = build('sheets', 'v4', credentials=self.creds)
@@ -1536,12 +1605,14 @@ class LocalSheets:
     def backup(self):
         return
 
+
 class GoogleSheets:
     def __init__(self):
         self.count1 = 0
         self.SERVICE_ACCOUNT_FILE = 'keys.json'
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-        self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE, scopes=self.SCOPES)
+        self.creds = service_account.Credentials.from_service_account_file(self.SERVICE_ACCOUNT_FILE,
+                                                                           scopes=self.SCOPES)
         self.SPREADSHEET_ID = '14H-OyOk_rdHtuTCj6lRj5C1__BJksgskzBg9G5NOCpo'
         # self.SPREADSHEET_ID = '1liNHmgvzUeCjYVIPTywnQEeavIgaB2e0BeJFmrqR5l8'
         self.service = build('sheets', 'v4', credentials=self.creds)
@@ -1566,7 +1637,8 @@ class GoogleSheets:
                 },
                 {
                     'pasteData': {
-                        'data': '\n'.join([','.join(map(str, row)) for row in instance1.f_update_textbox(header_only=True) + data]),
+                        'data': '\n'.join(
+                            [','.join(map(str, row)) for row in instance1.f_update_textbox(header_only=True) + data]),
                         'type': 'PASTE_NORMAL',
                         'delimiter': ',',
                         'coordinate': {
