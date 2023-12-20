@@ -228,10 +228,6 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, root):
-        self.state_resetted_NOTES2group_multib = False
-        self.state_resetted_NOTES2group_emptyb = False
-        self.count_logic_group_b_multi = 0
-        self.count_logic_group_b_empty = 0
         self.list_group_multi = []
         self.list_group_empty = []
         self.state_resetted_NOTES2group_empty = False
@@ -258,9 +254,7 @@ class MainFunction:
         self.closed_NOTES2c = [float(0) for _ in range(10)]
         self.marked_sum_NOTES2 = float(0)
         self.marked_sum_NOTES2_multi = float(0)
-        self.marked_sum_NOTES2_b_multi = float(0)
         self.marked_sum_NOTES2_empty = float(0)
-        self.marked_sum_NOTES2_b_empty = float(0)
         self.state_sumAFsame2 = ''
         self.suspender2 = ''
         self.suspender = ''
@@ -799,14 +793,6 @@ class MainFunction:
             pass
 
         if now.minute in [x for x in range(0, 60, 15)] and now.minute not in [self.last_minute]:
-            self.count_logic_group_b_multi = 0
-            self.count_logic_group_multi = 0
-            self.count_logic_group_b_empty = 0
-            self.count_logic_group_empty = 0
-            self.marked_sum_NOTES2_b_multi = 0
-            self.marked_sum_NOTES2_multi = 0
-            self.marked_sum_NOTES2_b_empty = 0
-            self.marked_sum_NOTES2_empty = 0
             self.total_pos2.insert(0, 0)
             self.total_neg2.insert(0, 0)
             self.total_sum2.insert(0, round(self.total_pos2[0] + self.total_neg2[0], 2))
@@ -974,30 +960,6 @@ class MainFunction:
             if -self.count_consecutive >= 2 and self.marked_sum_NOTES2_empty != 0:
                 self.marked_sum_NOTES2_empty = self.sum_NOTES2[0]
 
-            if self.count_consecutive == 1 and (self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_empty != 0 or self.marked_sum_NOTES2_b_empty == 0):
-                self.count_logic_group_b_empty = 1
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-            if self.count_consecutive == 1 and self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_empty != 0 and self.diff[1] < 0 and self.prices[0] != self.prices[1]:
-                self.count_logic_group_b_empty += 1
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-            if self.count_consecutive >= 2 and self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_empty != 0:
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-
-            if -self.count_consecutive == 1 and (self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_multi != 0 or self.marked_sum_NOTES2_b_multi == 0):
-                self.count_logic_group_b_multi = 1
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-            if -self.count_consecutive == 1 and self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_multi != 0 and self.diff[1] > 0 and self.prices[0] != self.prices[1]:
-                self.count_logic_group_b_multi += 1
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-            if -self.count_consecutive >= 2 and self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_multi != 0:
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-
         direction = Multi
         if self.v_direction not in [direction, Nopos]:
             if self.count_consecutive == 1 and (self.sum_NOTES2[0] < self.marked_sum_NOTES2 != 0 or self.marked_sum_NOTES2 == 0):
@@ -1040,6 +1002,7 @@ class MainFunction:
         Empty = 'Empty'
         Multi = 'Multi'
         Nopos = 'NO_POS'
+        # pass
 
         #region profit stop loss
         # profit_stop_loss = 4
@@ -1053,45 +1016,61 @@ class MainFunction:
         #     return
         #endregion
 
-        # direction = Multi
-        # if self.v_direction not in [direction] and self.marked_sum_NOTES2_multi > self.marked_sum_NOTES2_empty >= 20:
-        #     reason = f'group_M > group_E >= 20'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
-        # direction = Empty
-        # if self.v_direction not in [direction] and self.marked_sum_NOTES2_empty < self.marked_sum_NOTES2_multi <= -20:
-        #     reason = f'group_M < group_E <= -20'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
-
         direction = Multi
-        if self.v_direction not in [direction] and self.count_logic_group_multi >= 3 and self.count_logic_group_b_multi >= 3:
+        if self.v_direction in [Nopos] and self.count_logic_group_multi >= 3:
             reason = f'3 grouping increases'
             self.f_close_position(reason)
             self.f_open_position(reason, direction)
             return
         direction = Empty
-        if self.v_direction not in [direction] and self.count_logic_group_empty >= 3 and self.count_logic_group_b_empty >= 3:
+        if self.v_direction in [Nopos] and self.count_logic_group_empty >= 3:
             reason = f'3 grouping decreases'
             self.f_close_position(reason)
             self.f_open_position(reason, direction)
             return
 
+        direction = Multi
+        if self.v_direction not in [direction, Nopos] and self.prices[0] > self.average_HL[0] \
+        and self.closed_H[0] > self.closed_H[1] > 0:
+            reason = f'H color reverse'
+            self.f_close_position(reason)
+            # self.f_open_position(reason, direction)
+            return
+        direction = Empty
+        if self.v_direction not in [direction, Nopos] and self.prices[0] < self.average_HL[0] \
+        and self.closed_L[0] < self.closed_L[1] > 0:
+            reason = f'L color reverse'
+            self.f_close_position(reason)
+            # self.f_open_position(reason, direction)
+            return
 
-        # direction = Multi
-        # if self.v_direction in [Nopos] and self.count_logic_group_multi >= 3:
-        #     reason = f'3 grouping increases'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
-        # direction = Empty
-        # if self.v_direction in [Nopos] and self.count_logic_group_empty >= 3:
-        #     reason = f'3 grouping decreases'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
+        direction = Multi
+        if self.v_direction not in [direction, Nopos] and len(self.list_group_multi) > 1 and self.list_group_multi[0] >= self.list_group_multi[-1] + 20:
+            reason = f'u2 status improve by 20'
+            self.f_close_position(reason)
+            # self.f_open_position(reason, direction)
+            return
+        direction = Empty
+        if self.v_direction not in [direction, Nopos] and len(self.list_group_multi) > 1 and self.list_group_multi[0] <= self.list_group_multi[-1] - 20:
+            reason = f'd2 status improve by 20'
+            self.f_close_position(reason)
+            # self.f_open_position(reason, direction)
+            return
+
+        direction = Multi
+        if self.v_direction not in [direction, Nopos] and self.count_logic_group >= 3:
+            reason = f'3 grouping increases'
+            self.f_close_position(reason)
+            self.f_open_position(reason, direction)
+            return
+
+        direction = Empty
+        if self.v_direction not in [direction, Nopos] and self.count_logic_group >= 3:
+            reason = f'3 grouping decreases'
+            self.f_close_position(reason)
+            self.f_open_position(reason, direction)
+            return
+
 
     def f_update_textbox(self, note='', blank_before=False, blank_after=False, header_only=False, note2=False):
         # count_trades = f"{self.count_trades_profit} of {self.count_trades}"
@@ -1119,13 +1098,6 @@ class MainFunction:
         if self.count_logic_group_empty > 0:
             groupings_e = f" d{self.count_logic_group_empty}{'reset' if self.state_resetted_NOTES2group_empty else ''} ({self.marked_sum_NOTES2_empty})"
         self.state_resetted_NOTES2group_empty = False
-
-        if self.count_logic_group_b_multi > 0 and self.state_resetted_NOTES2group_multib:
-            groupings_m = f" d{self.count_logic_group_b_multi} ({self.marked_sum_NOTES2_b_multi})"
-        if self.count_logic_group_b_empty > 0 and self.state_resetted_NOTES2group_emptyb:
-            groupings_e = f" u{self.count_logic_group_b_empty} ({self.marked_sum_NOTES2_b_empty})"
-        self.state_resetted_NOTES2group_multib = False
-        self.state_resetted_NOTES2group_emptyb = False
 
         sim_balance = f"({self.count_balance_add}) {round(self.v_bal_now, 2)} / {round(self.v_unrealized, 2)} / {buy_price}"
         if self.v_direction == 'Multi':
@@ -1771,7 +1743,11 @@ class MainFunction:
         self.note2 = ''
         self.f_update_textbox()
 
+        self.count_logic_group_multi = 0
+        self.count_logic_group_empty = 0
         self.marked_sum_NOTES2 = 0
+        self.marked_sum_NOTES2_multi = 0
+        self.marked_sum_NOTES2_empty = 0
         self.sum_NOTES2 = [float(0)] + self.sum_NOTES2[:9]
         self.state_logic_marked_price = ''
         self.count_opened_15m += 1
@@ -1824,7 +1800,11 @@ class MainFunction:
         self.note2 = ''
         self.f_update_textbox()
 
+        self.count_logic_group_multi = 0
+        self.count_logic_group_empty = 0
         self.marked_sum_NOTES2 = 0
+        self.marked_sum_NOTES2_multi = 0
+        self.marked_sum_NOTES2_empty = 0
         self.sum_NOTES2 = [float(0)] + self.sum_NOTES2[:9]
         self.count_logic_group = 0
         self.state_logic_marked_price = ''
@@ -1965,7 +1945,7 @@ class GoogleSheets:
         except:
             return False
 
-    def backup(self, row_limit=4000, clear=False):
+    def backup(self, row_limit=10000, clear=False):
         # Authenticate with Google Sheets API
         credentials = self.creds
         client = gspread.authorize(credentials)

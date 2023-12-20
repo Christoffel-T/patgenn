@@ -228,17 +228,7 @@ class FloatingText:
 
 class MainFunction:
     def __init__(self, root):
-        self.state_resetted_NOTES2group_multib = False
-        self.state_resetted_NOTES2group_emptyb = False
-        self.count_logic_group_b_multi = 0
-        self.count_logic_group_b_empty = 0
-        self.list_group_multi = []
-        self.list_group_empty = []
-        self.state_resetted_NOTES2group_empty = False
-        self.state_resetted_NOTES2group_multi = False
         self.state_resetted_NOTES2group = False
-        self.count_logic_group_multi = 0
-        self.count_logic_group_empty = 0
         self.count_logic_group = 0
         self.tradingview_scraped = False
         self.current_time = datetime.now().replace(second=0, microsecond=0)
@@ -257,10 +247,6 @@ class MainFunction:
         self.sum_L_expand = float(0)
         self.closed_NOTES2c = [float(0) for _ in range(10)]
         self.marked_sum_NOTES2 = float(0)
-        self.marked_sum_NOTES2_multi = float(0)
-        self.marked_sum_NOTES2_b_multi = float(0)
-        self.marked_sum_NOTES2_empty = float(0)
-        self.marked_sum_NOTES2_b_empty = float(0)
         self.state_sumAFsame2 = ''
         self.suspender2 = ''
         self.suspender = ''
@@ -799,14 +785,6 @@ class MainFunction:
             pass
 
         if now.minute in [x for x in range(0, 60, 15)] and now.minute not in [self.last_minute]:
-            self.count_logic_group_b_multi = 0
-            self.count_logic_group_multi = 0
-            self.count_logic_group_b_empty = 0
-            self.count_logic_group_empty = 0
-            self.marked_sum_NOTES2_b_multi = 0
-            self.marked_sum_NOTES2_multi = 0
-            self.marked_sum_NOTES2_b_empty = 0
-            self.marked_sum_NOTES2_empty = 0
             self.total_pos2.insert(0, 0)
             self.total_neg2.insert(0, 0)
             self.total_sum2.insert(0, round(self.total_pos2[0] + self.total_neg2[0], 2))
@@ -951,54 +929,6 @@ class MainFunction:
         Nopos = 'NO_POS'
 
         direction = Multi
-        if self.v_direction not in []:
-            if self.count_consecutive == 1 and (self.sum_NOTES2[0] < self.marked_sum_NOTES2_multi != 0 or self.marked_sum_NOTES2_multi == 0):
-                self.count_logic_group_multi = 1
-                self.marked_sum_NOTES2_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multi = True
-            if self.count_consecutive == 1 and self.sum_NOTES2[0] > self.marked_sum_NOTES2_multi != 0 and self.prices[0] != self.prices[1] and self.diff[1] < 0:
-                self.count_logic_group_multi += 1
-                self.marked_sum_NOTES2_multi = self.sum_NOTES2[0]
-            if self.count_consecutive >= 2:
-                self.marked_sum_NOTES2_multi = self.sum_NOTES2[0]
-
-        direction = Empty
-        if self.v_direction not in []:
-            if -self.count_consecutive == 1 and (self.sum_NOTES2[0] > self.marked_sum_NOTES2_empty != 0 or self.marked_sum_NOTES2_empty == 0):
-                self.count_logic_group_empty = 1
-                self.marked_sum_NOTES2_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_empty = True
-            if -self.count_consecutive == 1 and self.sum_NOTES2[0] < self.marked_sum_NOTES2_empty != 0 and self.prices[0] != self.prices[1] and self.diff[1] > 0:
-                self.count_logic_group_empty += 1
-                self.marked_sum_NOTES2_empty = self.sum_NOTES2[0]
-            if -self.count_consecutive >= 2 and self.marked_sum_NOTES2_empty != 0:
-                self.marked_sum_NOTES2_empty = self.sum_NOTES2[0]
-
-            if self.count_consecutive == 1 and (self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_empty != 0 or self.marked_sum_NOTES2_b_empty == 0):
-                self.count_logic_group_b_empty = 1
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-            if self.count_consecutive == 1 and self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_empty != 0 and self.diff[1] < 0 and self.prices[0] != self.prices[1]:
-                self.count_logic_group_b_empty += 1
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-            if self.count_consecutive >= 2 and self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_empty != 0:
-                self.marked_sum_NOTES2_b_empty = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_emptyb = True
-
-            if -self.count_consecutive == 1 and (self.sum_NOTES2[0] < self.marked_sum_NOTES2_b_multi != 0 or self.marked_sum_NOTES2_b_multi == 0):
-                self.count_logic_group_b_multi = 1
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-            if -self.count_consecutive == 1 and self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_multi != 0 and self.diff[1] > 0 and self.prices[0] != self.prices[1]:
-                self.count_logic_group_b_multi += 1
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-            if -self.count_consecutive >= 2 and self.sum_NOTES2[0] > self.marked_sum_NOTES2_b_multi != 0:
-                self.marked_sum_NOTES2_b_multi = self.sum_NOTES2[0]
-                self.state_resetted_NOTES2group_multib = True
-
-        direction = Multi
         if self.v_direction not in [direction, Nopos]:
             if self.count_consecutive == 1 and (self.sum_NOTES2[0] < self.marked_sum_NOTES2 != 0 or self.marked_sum_NOTES2 == 0):
                 self.count_logic_group = 1
@@ -1009,10 +939,6 @@ class MainFunction:
                 self.marked_sum_NOTES2 = self.sum_NOTES2[0]
             if self.count_consecutive >= 2:
                 self.marked_sum_NOTES2 = self.sum_NOTES2[0]
-            if self.count_logic_group_multi == 2:
-                self.list_group_multi.insert(0, self.sum_NOTES2[0])
-            else:
-                self.list_group_multi = []
         direction = Empty
         if self.v_direction not in [direction, Nopos]:
             if -self.count_consecutive == 1 and (self.sum_NOTES2[0] > self.marked_sum_NOTES2 != 0 or self.marked_sum_NOTES2 == 0):
@@ -1024,10 +950,6 @@ class MainFunction:
                 self.marked_sum_NOTES2 = self.sum_NOTES2[0]
             if -self.count_consecutive >= 2 and self.marked_sum_NOTES2 != 0:
                 self.marked_sum_NOTES2 = self.sum_NOTES2[0]
-            if self.count_logic_group_multi == 2:
-                self.list_group_empty.insert(0, self.sum_NOTES2[0])
-            else:
-                self.list_group_empty = []
 
 
         self.text = f'{self.note}{self.subtext1}{subtext2}'
@@ -1040,6 +962,7 @@ class MainFunction:
         Empty = 'Empty'
         Multi = 'Multi'
         Nopos = 'NO_POS'
+        # pass
 
         #region profit stop loss
         # profit_stop_loss = 4
@@ -1053,45 +976,230 @@ class MainFunction:
         #     return
         #endregion
 
-        # direction = Multi
-        # if self.v_direction not in [direction] and self.marked_sum_NOTES2_multi > self.marked_sum_NOTES2_empty >= 20:
-        #     reason = f'group_M > group_E >= 20'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
-        # direction = Empty
-        # if self.v_direction not in [direction] and self.marked_sum_NOTES2_empty < self.marked_sum_NOTES2_multi <= -20:
-        #     reason = f'group_M < group_E <= -20'
-        #     self.f_close_position(reason)
-        #     self.f_open_position(reason, direction)
-        #     return
-
         direction = Multi
-        if self.v_direction not in [direction] and self.count_logic_group_multi >= 3 and self.count_logic_group_b_multi >= 3:
-            reason = f'3 grouping increases'
+        if self.v_direction not in [direction, Nopos] and self.prices[0] > self.average_HL[0] \
+        and self.closed_H[0] > self.closed_H[1] > 0:
+            reason = f'H color reverse'
             self.f_close_position(reason)
             self.f_open_position(reason, direction)
             return
         direction = Empty
-        if self.v_direction not in [direction] and self.count_logic_group_empty >= 3 and self.count_logic_group_b_empty >= 3:
-            reason = f'3 grouping decreases'
+        if self.v_direction not in [direction, Nopos] and self.prices[0] < self.average_HL[0] \
+        and self.closed_L[0] < self.closed_L[1] > 0:
+            reason = f'L color reverse'
             self.f_close_position(reason)
             self.f_open_position(reason, direction)
             return
 
+        direction = Multi
+        if self.v_direction not in [direction, Nopos] and self.count_logic_group >= 3:
+            reason = f'3 grouping increases'
+            self.f_close_position(reason)
+            self.f_open_position(reason, direction)
+            return
 
-        # direction = Multi
-        # if self.v_direction in [Nopos] and self.count_logic_group_multi >= 3:
-        #     reason = f'3 grouping increases'
+        direction = Empty
+        if self.v_direction not in [direction, Nopos] and self.count_logic_group >= 3:
+            reason = f'3 grouping increases'
+            self.f_close_position(reason)
+            self.f_open_position(reason, direction)
+            return
+
+        direction = 'Multi'
+        if self.v_direction == 'NO_POS':
+            reason = f'INITIAL BUY'
+            self.f_open_position(reason, direction)
+            return
+
+        # direction = 'Multi'
+        # if self.v_direction == 'Empty' and self.count_consecutive >= 3 and self.count_changes_after_trigger_NOTES2 >= 3 \
+        # and self.state_logic_NOTES2_reverse == direction:
+        #     reason = f'NOTES2 reverse'
         #     self.f_close_position(reason)
         #     self.f_open_position(reason, direction)
         #     return
-        # direction = Empty
-        # if self.v_direction in [Nopos] and self.count_logic_group_empty >= 3:
-        #     reason = f'3 grouping decreases'
+        # direction = 'Empty'
+        # if self.v_direction == 'Multi' and -self.count_consecutive >= 3 and self.count_changes_after_trigger_NOTES2 >= 3 \
+        # and self.state_logic_NOTES2_reverse == direction:
+        #     reason = f'NOTES2 reverse'
         #     self.f_close_position(reason)
         #     self.f_open_position(reason, direction)
         #     return
+        #
+        # direction = 'Multi'
+        # if self.v_direction not in [direction, 'NO_POS'] and self.state_logic_NOTES2_reverse == direction and self.sum_NOTES2[0] < 0:
+        #     self.state_logic_NOTES2_reverse = ''
+        # if self.v_direction not in [direction, 'NO_POS'] and self.sum_NOTES2[0] > 0 and self.state_logic_NOTES2_reverse != direction:
+        #     self.state_logic_NOTES2_reverse = direction
+        #     self.count_changes_after_trigger_NOTES2 = 0
+        # direction = 'Empty'
+        # if self.v_direction not in [direction, 'NO_POS'] and self.state_logic_NOTES2_reverse == direction and self.sum_NOTES2[0] > 0:
+        #     self.state_logic_NOTES2_reverse = ''
+        # if self.v_direction not in [direction, 'NO_POS'] and self.sum_NOTES2[0] < 0 and self.state_logic_NOTES2_reverse != direction:
+        #     self.state_logic_NOTES2_reverse = direction
+        #     self.count_changes_after_trigger_NOTES2 = 0
+
+        # direction = 'Multi'
+        # if self.v_direction != direction and self.sum_H_expand - self.sum_L_expand >= 10:
+        #     reason = f'H_expand - L_expand >= 10'
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        # direction = 'Empty'
+        # if self.v_direction != direction and self.sum_L_expand - self.sum_H_expand >= 10:
+        #     reason = f'L_expand - H_expand >= 10'
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        #
+        # direction = 'Multi'
+        # if self.v_direction != direction and self.hl >= 7 and self.sum_H_expand - self.sum_L_expand >= 7 \
+        # and self.state_logic_hl_expand == direction:
+        #     reason = f'H_expand - L_expand >= 7'
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        # direction = 'Empty'
+        # if self.v_direction != direction and self.hl >= 7 and self.sum_L_expand - self.sum_H_expand >= 7 \
+        # and self.state_logic_hl_expand == direction:
+        #     reason = f'L_expand - H_expand >= 7'
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        #
+        # if all(self.sum_3_cumulative_a[i] > self.sum_3_cumulative_a[i+1] for i in range(2)):
+        #     self.state_logic_hl_expand = 'Multi'
+        # if all(self.sum_3_cumulative_a[i] < self.sum_3_cumulative_a[i+1] for i in range(2)):
+        #     self.state_logic_hl_expand = 'Empty'
+
+    # direction = 'Multi'
+        # if self.v_direction != direction and self.suspender2 == direction and self.total_sum2[0] -1 >= self.marked_sum:
+        #     reason = f'contradict triggered'
+        #     self.suspender2 = ''
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        # if self.v_direction != direction and self.suspender == direction and +self.count_consecutive >= 3 and self.count_changes_after_suspender >=3:
+        #     self.suspender2 = direction
+        #     self.suspender = ''
+        #     self.marked_sum = self.total_sum2[0]
+        #     return
+        # if self.suspender != direction and (self.total_sum2[0] > 0 and self.sum_AF[0] >= +40 and self.prices[0] + 15 < self.closed_C[0] > 0):
+        #     self.suspender = direction
+        #     self.count_changes_after_suspender = 0
+        #     return
+        #
+        # direction = 'Empty'
+        # if self.v_direction != direction and self.suspender2 == direction and self.total_sum2[0] +1 <= self.marked_sum:
+        #     reason = f'contradict triggered'
+        #     self.suspender2 = ''
+        #     self.f_close_position(reason)
+        #     self.f_open_position(reason, direction)
+        #     return
+        # if self.v_direction != direction and self.suspender == direction and -self.count_consecutive >= 3 and self.count_changes_after_suspender >=3:
+        #     self.suspender2 = direction
+        #     self.suspender = ''
+        #     self.marked_sum = self.total_sum2[0]
+        #     return
+        # # noinspection PyChainedComparisons
+        # if self.suspender != direction and (self.total_sum2[0] < 0 and self.sum_AF[0] <= -40 and self.prices[0] - 15 > self.closed_C[0] > 0):
+        #     self.suspender = direction
+        #     self.count_changes_after_suspender = 0
+        #     return
+        #
+        # if self.suspender == '':
+        #     direction = 'Multi'
+        #     if self.v_direction != direction and self.state_sumAFsame2 == direction and self.total_sum2[0]-1 >= self.marked_sum:
+        #         # reason = f'2 sumAF reverse with 3 inc'
+        #         self.state_sumAFsame2 = ''
+        #         # self.f_close_position(reason)
+        #         # self.f_open_position(reason, direction)
+        #         return
+        #     count_sAF = + (1 if self.sum_AF[0] > 0 else 0) + (1 if self.sum_AF2[0] > 0 else 0) + (1 if self.sum_AF3[0] > 0 else 0)
+        #     if self.v_direction != direction and count_sAF >= 2 and self.total_sum2[0] > 0 \
+        #     and +self.count_consecutive >= 3 and self.count_changes_after_sumAFsame >= 3 and self.state_sumAFsame == direction:
+        #         self.state_sumAFsame = ''
+        #         self.state_sumAFsame2 = direction
+        #         self.count_changes_after_sumAFsame = 0
+        #         self.marked_sum = self.total_sum2[0]
+        #         return
+        #
+        #     direction = 'Empty'
+        #     if self.v_direction != direction and self.state_sumAFsame2 == direction and self.total_sum2[0]+1 <= self.marked_sum:
+        #         # reason = f'2 sumAF reverse'
+        #         self.state_sumAFsame2 = ''
+        #         # self.f_close_position(reason)
+        #         # self.f_open_position(reason, direction)
+        #         return
+        #     count_sAF = + (1 if self.sum_AF[0] < 0 else 0) + (1 if self.sum_AF2[0] < 0 else 0) + (1 if self.sum_AF3[0] < 0 else 0)
+        #     if self.v_direction != direction and count_sAF >= 2 and self.total_sum2[0] < 0 \
+        #     and -self.count_consecutive >= 3 and self.count_changes_after_sumAFsame >= 3 and self.state_sumAFsame == direction:
+        #         self.state_sumAFsame = ''
+        #         self.state_sumAFsame2 = direction
+        #         self.count_changes_after_sumAFsame = 0
+        #         self.marked_sum = self.total_sum2[0]
+        #         return
+        #
+        #
+        #     direction = 'Multi'
+        #     if self.v_direction != direction and self.sum_AF[0] > 0 and self.sum_AF2[0] > 0 and self.sum_AF3[0] > 0 \
+        #     and self.state_sumAFsame != direction:
+        #         self.state_sumAFsame = direction
+        #         self.count_changes_after_sumAFsame = 0
+        #         return
+        #     direction = 'Empty'
+        #     if self.v_direction != direction and self.sum_AF[0] < 0 and self.sum_AF2[0] < 0 and self.sum_AF3[0] < 0 \
+        #     and self.state_sumAFsame != direction:
+        #         self.state_sumAFsame = direction
+        #         self.count_changes_after_sumAFsame = 0
+        #         return
+        #
+        #     priors_exist = self.closed_L[1] > 0
+        #
+        #     direction = 'Multi'
+        #     if self.state_logic_marked_price == direction \
+        #     and self.closed_H[0] < self.closed_H[1] and self.closed_L[0] < self.closed_L[1] and self.prices[0] + 15 < self.closed_C[1] and priors_exist:
+        #         self.marked_price = 0
+        #         self.state_logic_marked_price = ''
+        #     direction = 'Empty'
+        #     if self.state_logic_marked_price == direction \
+        #     and self.closed_H[0] > self.closed_H[1] and self.closed_L[0] > self.closed_L[1] and self.prices[0] + 15 > self.closed_C[1] and priors_exist:
+        #         self.marked_price = 0
+        #         self.state_logic_marked_price = ''
+        #
+        #     direction = 'Multi'
+        #     if self.v_direction != direction and self.state_logic_marked_price != direction \
+        #     and (self.closed_H[0] > self.closed_H[1] or self.closed_L[0] > self.closed_L[1] or self.prices[0] - 15 > self.closed_C[1]):
+        #         self.marked_price = self.prices[0]
+        #         self.state_logic_marked_price = direction
+        #         return
+        #     direction = 'Empty'
+        #     if self.v_direction != direction and self.state_logic_marked_price != direction \
+        #     and (self.closed_H[0] < self.closed_H[1] or self.closed_L[0] < self.closed_L[1] or self.prices[0] + 15 < self.closed_C[1]):
+        #         self.marked_price = self.prices[0]
+        #         self.state_logic_marked_price = direction
+        #         return
+        #
+        #     direction = 'Multi'
+        #     if self.v_direction != direction and self.count_changes_after_trade >= 2 \
+        #     and self.closed_H[0] > self.closed_H[1] and self.closed_L[0] > self.closed_L[1] and self.prices[0] - 15 > self.closed_C[1] and priors_exist \
+        #     and self.sum_AF2[0] > 0 and self.sum_AF3[0] > 0:
+        #         reason = f"H L C SUMAF23 same color"
+        #         self.f_close_position(reason)
+        #         self.f_open_position(reason, direction)
+        #         return
+        #     direction = 'Empty'
+        #     # noinspection PyChainedComparisons
+        #     if self.v_direction != direction and self.count_changes_after_trade >= 2 \
+        #     and self.closed_H[0] < self.closed_H[1] and self.closed_L[0] < self.closed_L[1] and self.prices[0] + 15 < self.closed_C[1] and priors_exist \
+        #     and self.sum_AF2[0] < 0 and self.sum_AF3[0] < 0:
+        #         reason = f"H L C SUMAF23 same color"
+        #         self.f_close_position(reason)
+        #         self.f_open_position(reason, direction)
+        #         return
+
+
+
 
     def f_update_textbox(self, note='', blank_before=False, blank_after=False, header_only=False, note2=False):
         # count_trades = f"{self.count_trades_profit} of {self.count_trades}"
@@ -1110,22 +1218,6 @@ class MainFunction:
             buy_price = f"{self.v_aop} (+{price_diff_aop})"
         if price_diff_aop < 0:
             buy_price = f"{self.v_aop} ({price_diff_aop})"
-
-        groupings_m = ''
-        groupings_e = ''
-        if self.count_logic_group_multi > 0:
-            groupings_m = f" u{self.count_logic_group_multi}{'reset' if self.state_resetted_NOTES2group_multi else ''} ({self.marked_sum_NOTES2_multi})"
-        self.state_resetted_NOTES2group_multi = False
-        if self.count_logic_group_empty > 0:
-            groupings_e = f" d{self.count_logic_group_empty}{'reset' if self.state_resetted_NOTES2group_empty else ''} ({self.marked_sum_NOTES2_empty})"
-        self.state_resetted_NOTES2group_empty = False
-
-        if self.count_logic_group_b_multi > 0 and self.state_resetted_NOTES2group_multib:
-            groupings_m = f" d{self.count_logic_group_b_multi} ({self.marked_sum_NOTES2_b_multi})"
-        if self.count_logic_group_b_empty > 0 and self.state_resetted_NOTES2group_emptyb:
-            groupings_e = f" u{self.count_logic_group_b_empty} ({self.marked_sum_NOTES2_b_empty})"
-        self.state_resetted_NOTES2group_multib = False
-        self.state_resetted_NOTES2group_emptyb = False
 
         sim_balance = f"({self.count_balance_add}) {round(self.v_bal_now, 2)} / {round(self.v_unrealized, 2)} / {buy_price}"
         if self.v_direction == 'Multi':
@@ -1300,8 +1392,6 @@ class MainFunction:
             ['O', Oprice if not note2 else ''],
             ['H', Hprice if not note2 else ''],
             ['sim_balance/buy_price', sim_balance if not note2 else ''],
-            ['group_M', groupings_m if not note2 else ''],
-            ['group_E', groupings_e if not note2 else ''],
             ['sum_note2', sum_note2 if not note2 else ''],
             ['AVG(HL)', avg_hl if not note2 else ''],
             ['NOTES2', NOTES2 if not note2 else ''],
@@ -1771,7 +1861,6 @@ class MainFunction:
         self.note2 = ''
         self.f_update_textbox()
 
-        self.marked_sum_NOTES2 = 0
         self.sum_NOTES2 = [float(0)] + self.sum_NOTES2[:9]
         self.state_logic_marked_price = ''
         self.count_opened_15m += 1
@@ -1965,7 +2054,7 @@ class GoogleSheets:
         except:
             return False
 
-    def backup(self, row_limit=4000, clear=False):
+    def backup(self, row_limit=10000, clear=False):
         # Authenticate with Google Sheets API
         credentials = self.creds
         client = gspread.authorize(credentials)

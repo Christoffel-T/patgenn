@@ -1,5 +1,4 @@
 ﻿#Requires AutoHotkey v2.0
-;update1
 win := "Exchange - Google Chrome"
 loop {
 	if !WinExist(win)
@@ -12,9 +11,9 @@ loop {
 		WinActivate win
 	}
 	Sleep y*10
-	MouseMove 574-x, 364+y, 10
+	MouseMove 480-x, 403+y, 10
 	Sleep x*10
-	MouseMove 574-x, 464+y, 10
+	MouseMove 482-x, 453+y, 10
 	Sleep y*500
 }
 Return

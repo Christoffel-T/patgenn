@@ -1,10 +1,26 @@
+import psutil
+
 from classes import *
 import ast
 
 gsheets = GoogleSheets()
+try:
+    os.remove(gsheets.localspreadsheet)
+except:
+    pass
+
 # UPDATE1
 
-while True:
+def is_chrome_running():
+    for process in psutil.process_iter(attrs=['name']):
+        if process.info['name'] == 'chrome.exe':
+            return True
+    return False
+
+while not is_chrome_running():
+    time.sleep(1)
+
+while is_chrome_running():
     time.sleep(1)
     if os.path.exists(gsheets.localspreadsheet):
         print('UPDATING TO GOOGLE SHEETS')
